@@ -37,7 +37,7 @@ if ( $settings ) {
     
     foreach ( $keys as $key ) {
         $value = get_option( 'wwcc_' . $key );
-        echo $key . ": " . ( $value ? $value : '[EMPTY]' ) . "\n";
+        echo esc_html( $key ) . ": " . ( $value ? esc_html( $value ) : '[EMPTY]' ) . "\n";
     }
 }
 echo "</pre>";
@@ -54,8 +54,8 @@ $tables = [
 ];
 
 foreach ( $tables as $table ) {
-    $exists = $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) === $table;
-    echo $table . ": " . ( $exists ? 'EXISTS ✓' : 'MISSING ✗' ) . "<br>";
+    $exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table ) ) === $table;
+    echo esc_html( $table ) . ": " . ( $exists ? 'EXISTS ✓' : 'MISSING ✗' ) . "<br>";
 }
 
 echo "<hr><p><strong>If provider and credentials show [EMPTY], your settings didn't save. Go back to Settings page and try saving again.</strong></p>";
