@@ -163,8 +163,9 @@ class Order_Sync {
 		if ( is_wp_error( $order ) ) {
 			WhatsApp_API::get_instance()->send_message(
 				$customer_data['phone'],
-				sprintf(
 				/* translators: Error message from order creation */
+				__( '❌ Sorry, we couldn\'t create your order. Please try again or contact support.', 'woocommerce-order-messaging-kenya' )
+			);
 			return;
 		}
 

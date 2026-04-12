@@ -35,7 +35,7 @@ class WhatsApp_WooCommerce {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->load_dependencies();
+		// Dependencies are loaded in init() to avoid early loading
 	}
 
 	/**
@@ -62,6 +62,9 @@ class WhatsApp_WooCommerce {
 	 * Initialize plugin hooks
 	 */
 	public function init() {
+		// Load dependencies first
+		$this->load_dependencies();
+
 		// Load text domain
 		load_plugin_textdomain(
 			'woocommerce-order-messaging-kenya',
@@ -177,8 +180,11 @@ class WhatsApp_WooCommerce {
 			wp_die( esc_html__( 'WooCommerce must be installed and active', 'woocommerce-order-messaging-kenya' ) );
 		}
 
-		// Create database tables
+		// Load all dependencies for activation
+		require_once WWCC_PLUGIN_DIR . 'includes/class-settings.php';
 		require_once WWCC_PLUGIN_DIR . 'includes/class-db.php';
+
+		// Create database tables
 		DB_WhatsApp_WooCommerce::create_tables();
 
 		// Set plugin version

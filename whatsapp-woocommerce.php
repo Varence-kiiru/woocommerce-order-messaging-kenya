@@ -32,10 +32,10 @@ if ( file_exists( WWCC_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
 }
 
 // Load plugin classes
-require_once WWCC_PLUGIN_DIR . 'includes/class-woocommerce-order-messaging-kenya.php';
+require_once WWCC_PLUGIN_DIR . 'includes/class-whatsapp-woocommerce.php';
 
 /**
- * The main plugin class
+ * The main plugin class instance
  */
 function wwcc_get_plugin() {
 	static $plugin;
@@ -47,9 +47,30 @@ function wwcc_get_plugin() {
 	return $plugin;
 }
 
-// Initialize plugin on plugins_loaded
-add_action( 'plugins_loaded', [ wwcc_get_plugin(), 'init' ] );
+/**
+ * Initialize plugin on init hook (recommended for translations)
+ */
+function wwcc_init_plugin() {
+	wwcc_get_plugin()->init();
+}
+add_action( 'init', 'wwcc_init_plugin', 0 );
 
-// Activation hooks
-register_activation_hook( __FILE__, [ 'WhatsApp_WooCommerce', 'activate' ] );
-register_deactivation_hook( __FILE__, [ 'WhatsApp_WooCommerce', 'deactivate' ] );
+/**
+ * Plugin activation hook
+ */
+function wwcc_activate_plugin() {
+	if ( class_exists( 'WhatsApp_WooCommerce' ) ) {
+		WhatsApp_WooCommerce::activate();
+	}
+}
+register_activation_hook( __FILE__, 'wwcc_activate_plugin' );
+
+/**
+ * Plugin deactivation hook
+ */
+function wwcc_deactivate_plugin() {
+	if ( class_exists( 'WhatsApp_WooCommerce' ) ) {
+		WhatsApp_WooCommerce::deactivate();
+	}
+}
+register_deactivation_hook( __FILE__, 'wwcc_deactivate_plugin' );
