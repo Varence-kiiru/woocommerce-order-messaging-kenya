@@ -305,6 +305,7 @@ class MPesa_Handler {
 		global $wpdb;
 
 		// Look up in postmeta for the CheckoutRequestID
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Reads a known WooCommerce meta entry to resolve the related order.
 		$order_id = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = %s AND meta_value = %s",
@@ -322,6 +323,7 @@ class MPesa_Handler {
 	private function log_transaction( $order_id, $phone, $amount, $transaction_type, $status ) {
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Inserts into the plugin's custom M-Pesa log table.
 		$wpdb->insert(
 			$wpdb->prefix . 'wwcc_mpesa_logs',
 			[

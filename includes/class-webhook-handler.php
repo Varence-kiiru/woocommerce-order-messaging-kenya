@@ -70,6 +70,7 @@ class Webhook_Handler {
 	public static function log_webhook( $source, $data, $status = 'received' ) {
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Inserts into the plugin's custom webhook log table.
 		$wpdb->insert(
 			$wpdb->prefix . 'wwcc_webhook_logs',
 			[

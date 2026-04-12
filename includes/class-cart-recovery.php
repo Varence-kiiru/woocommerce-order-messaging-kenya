@@ -102,6 +102,7 @@ class Cart_Recovery {
 		// Find abandoned carts that haven't been contacted yet
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Reads from the plugin's custom cart recovery table.
 		$abandoned_carts = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}wwcc_carts 
@@ -144,6 +145,7 @@ class Cart_Recovery {
 			// Mark as sent
 			global $wpdb;
 
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Updates the plugin's custom cart recovery table.
 			$wpdb->update(
 				$wpdb->prefix . 'wwcc_carts',
 				[ 'recovery_sent' => 1, 'recovery_sent_at' => current_time( 'mysql' ) ],
@@ -171,6 +173,7 @@ class Cart_Recovery {
 		global $wpdb;
 
 		// Check if cart already exists
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Reads from the plugin's custom cart recovery table.
 		$existing = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT id FROM {$wpdb->prefix}wwcc_carts WHERE order_id = %d",
@@ -179,6 +182,7 @@ class Cart_Recovery {
 		);
 
 		if ( $existing ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Updates the plugin's custom cart recovery table.
 			$wpdb->update(
 				$wpdb->prefix . 'wwcc_carts',
 				[
@@ -190,6 +194,7 @@ class Cart_Recovery {
 				[ '%d' ]
 			);
 		} else {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Inserts into the plugin's custom cart recovery table.
 			$wpdb->insert(
 				$wpdb->prefix . 'wwcc_carts',
 				[

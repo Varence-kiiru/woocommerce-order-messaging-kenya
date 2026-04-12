@@ -444,6 +444,7 @@ class Order_Sync {
 	private function log_conversation( $phone, $message, $order_id, $action ) {
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Inserts into the plugin's custom conversation log table.
 		$wpdb->insert(
 			$wpdb->prefix . 'wwcc_conversations',
 			[

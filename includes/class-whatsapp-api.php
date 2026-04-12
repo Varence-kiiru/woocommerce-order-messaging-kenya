@@ -375,6 +375,7 @@ class WhatsApp_API {
 	private function log_message( $order_id, $phone, $message, $message_type ) {
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Inserts into the plugin's custom WhatsApp log table.
 		$wpdb->insert(
 			$wpdb->prefix . 'wwcc_whatsapp_logs',
 			[

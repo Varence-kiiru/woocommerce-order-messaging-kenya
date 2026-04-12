@@ -116,10 +116,15 @@ class DB_WhatsApp_WooCommerce {
 	public static function drop_tables() {
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin uninstall removes its own custom tables.
 		$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}wwcc_whatsapp_logs" );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin uninstall removes its own custom tables.
 		$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}wwcc_mpesa_logs" );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin uninstall removes its own custom tables.
 		$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}wwcc_conversations" );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin uninstall removes its own custom tables.
 		$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}wwcc_webhook_logs" );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin uninstall removes its own custom tables.
 		$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}wwcc_carts" );
 	}
 }
