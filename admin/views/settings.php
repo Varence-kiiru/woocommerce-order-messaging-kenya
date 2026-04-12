@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$settings = WWCC_Settings::get_all();
+$wwcc_settings = WWCC_Settings::get_all();
 ?>
 
 <div class="wrap">
@@ -31,10 +31,10 @@ $settings = WWCC_Settings::get_all();
 						</th>
 						<td>
 							<select name="wwcc_settings[whatsapp_provider]" id="whatsapp_provider" onchange="toggleWhatsAppProvider()">
-								<option value="twilio" <?php selected( $settings['whatsapp_provider'] ?? '', 'twilio' ); ?>>
+								<option value="twilio" <?php selected( $wwcc_settings['whatsapp_provider'] ?? '', 'twilio' ); ?>>
 									<?php esc_html_e( 'Twilio', 'woocommerce-order-messaging-kenya' ); ?>
 								</option>
-								<option value="meta" <?php selected( $settings['whatsapp_provider'] ?? '', 'meta' ); ?>>
+								<option value="meta" <?php selected( $wwcc_settings['whatsapp_provider'] ?? '', 'meta' ); ?>>
 									<?php esc_html_e( 'Meta (WhatsApp Business)', 'woocommerce-order-messaging-kenya' ); ?>
 								</option>
 							</select>
@@ -50,7 +50,7 @@ $settings = WWCC_Settings::get_all();
 						</th>
 						<td>
 							<input type="text" name="wwcc_settings[business_phone]" id="business_phone" 
-								value="<?php echo esc_attr( $settings['business_phone'] ?? '' ); ?>" 
+								value="<?php echo esc_attr( $wwcc_settings['business_phone'] ?? '' ); ?>" 
 								placeholder="+2547XXXXXXXX" />
 							<p class="description">
 								<?php esc_html_e( 'Your business WhatsApp number with country code (e.g., +2547XXXXXXXX)', 'woocommerce-order-messaging-kenya' ); ?>
@@ -69,7 +69,7 @@ $settings = WWCC_Settings::get_all();
 							</th>
 							<td>
 								<input type="password" name="wwcc_settings[twilio_sid]" id="twilio_sid" 
-									value="<?php echo esc_attr( $settings['twilio_sid'] ?? '' ); ?>" />
+									value="<?php echo esc_attr( $wwcc_settings['twilio_sid'] ?? '' ); ?>" />
 								<p class="description">
 									<?php esc_html_e( 'Get from Twilio Console', 'woocommerce-order-messaging-kenya' ); ?>
 								</p>
@@ -82,7 +82,7 @@ $settings = WWCC_Settings::get_all();
 							</th>
 							<td>
 								<input type="password" name="wwcc_settings[twilio_token]" id="twilio_token" 
-									value="<?php echo esc_attr( $settings['twilio_token'] ?? '' ); ?>" />
+									value="<?php echo esc_attr( $wwcc_settings['twilio_token'] ?? '' ); ?>" />
 								<p class="description">
 									<?php esc_html_e( 'Get from Twilio Console', 'woocommerce-order-messaging-kenya' ); ?>
 								</p>
@@ -95,7 +95,7 @@ $settings = WWCC_Settings::get_all();
 							</th>
 							<td>
 								<input type="text" name="wwcc_settings[twilio_phone]" id="twilio_phone" 
-									value="<?php echo esc_attr( $settings['twilio_phone'] ?? '' ); ?>" 
+									value="<?php echo esc_attr( $wwcc_settings['twilio_phone'] ?? '' ); ?>" 
 									placeholder="+1234567890" />
 								<p class="description">
 									<?php esc_html_e( 'Your Twilio WhatsApp sandbox number', 'woocommerce-order-messaging-kenya' ); ?>
@@ -123,7 +123,7 @@ $settings = WWCC_Settings::get_all();
 							</th>
 							<td>
 								<input type="text" name="wwcc_settings[meta_phone_number_id]" id="meta_phone_number_id" 
-									value="<?php echo esc_attr( $settings['meta_phone_number_id'] ?? '' ); ?>" />
+									value="<?php echo esc_attr( $wwcc_settings['meta_phone_number_id'] ?? '' ); ?>" />
 								<p class="description">
 									<?php esc_html_e( 'From Meta Business Manager', 'woocommerce-order-messaging-kenya' ); ?>
 								</p>
@@ -135,7 +135,7 @@ $settings = WWCC_Settings::get_all();
 								<label for="meta_access_token"><?php esc_html_e( 'Access Token', 'woocommerce-order-messaging-kenya' ); ?></label>
 							</th>
 							<td>
-								<textarea name="wwcc_settings[meta_access_token]" id="meta_access_token"><?php echo esc_textarea( $settings['meta_access_token'] ?? '' ); ?></textarea>
+								<textarea name="wwcc_settings[meta_access_token]" id="meta_access_token"><?php echo esc_textarea( $wwcc_settings['meta_access_token'] ?? '' ); ?></textarea>
 								<p class="description">
 									<?php esc_html_e( 'From Meta Business Manager', 'woocommerce-order-messaging-kenya' ); ?>
 								</p>
@@ -164,7 +164,7 @@ $settings = WWCC_Settings::get_all();
 						</th>
 						<td>
 							<input type="password" name="wwcc_settings[daraja_consumer_key]" id="daraja_consumer_key" 
-								value="<?php echo esc_attr( $settings['daraja_consumer_key'] ?? '' ); ?>" />
+								value="<?php echo esc_attr( $wwcc_settings['daraja_consumer_key'] ?? '' ); ?>" />
 							<p class="description">
 								<?php esc_html_e( 'Get from Safaricom Daraja', 'woocommerce-order-messaging-kenya' ); ?>
 							</p>
@@ -177,7 +177,7 @@ $settings = WWCC_Settings::get_all();
 						</th>
 						<td>
 							<input type="password" name="wwcc_settings[daraja_consumer_secret]" id="daraja_consumer_secret" 
-								value="<?php echo esc_attr( $settings['daraja_consumer_secret'] ?? '' ); ?>" />
+								value="<?php echo esc_attr( $wwcc_settings['daraja_consumer_secret'] ?? '' ); ?>" />
 							<p class="description">
 								<?php esc_html_e( 'Get from Safaricom Daraja', 'woocommerce-order-messaging-kenya' ); ?>
 							</p>
@@ -190,7 +190,7 @@ $settings = WWCC_Settings::get_all();
 						</th>
 						<td>
 							<input type="text" name="wwcc_settings[mpesa_till_number]" id="mpesa_till_number" 
-								value="<?php echo esc_attr( $settings['mpesa_till_number'] ?? '' ); ?>" 
+								value="<?php echo esc_attr( $wwcc_settings['mpesa_till_number'] ?? '' ); ?>" 
 								placeholder="600XXX" />
 							<p class="description">
 								<?php esc_html_e( 'Your M-Pesa business till number', 'woocommerce-order-messaging-kenya' ); ?>
@@ -204,7 +204,7 @@ $settings = WWCC_Settings::get_all();
 						</th>
 						<td>
 							<input type="password" name="wwcc_settings[mpesa_passkey]" id="mpesa_passkey" 
-								value="<?php echo esc_attr( $settings['mpesa_passkey'] ?? '' ); ?>" />
+								value="<?php echo esc_attr( $wwcc_settings['mpesa_passkey'] ?? '' ); ?>" />
 							<p class="description">
 								<?php esc_html_e( 'M-Pesa Online Passkey (obtained from Safaricom)', 'woocommerce-order-messaging-kenya' ); ?>
 							</p>
@@ -232,7 +232,7 @@ $settings = WWCC_Settings::get_all();
 						</th>
 						<td>
 							<input type="checkbox" name="wwcc_settings[enable_notifications]" id="enable_notifications" 
-								value="1" <?php checked( $settings['enable_notifications'] ?? 1 ); ?> />
+								value="1" <?php checked( $wwcc_settings['enable_notifications'] ?? 1 ); ?> />
 							<p class="description">
 								<?php esc_html_e( 'Send WhatsApp notifications for new orders, payments, and shipping updates', 'woocommerce-order-messaging-kenya' ); ?>
 							</p>
@@ -245,7 +245,7 @@ $settings = WWCC_Settings::get_all();
 						</th>
 						<td>
 							<input type="checkbox" name="wwcc_settings[enable_order_creation]" id="enable_order_creation" 
-								value="1" <?php checked( $settings['enable_order_creation'] ?? 1 ); ?> />
+								value="1" <?php checked( $wwcc_settings['enable_order_creation'] ?? 1 ); ?> />
 							<p class="description">
 								<?php esc_html_e( 'Allow customers to create orders by messaging WhatsApp', 'woocommerce-order-messaging-kenya' ); ?>
 							</p>
@@ -258,7 +258,7 @@ $settings = WWCC_Settings::get_all();
 						</th>
 						<td>
 							<input type="checkbox" name="wwcc_settings[enable_cart_recovery]" id="enable_cart_recovery" 
-								value="1" <?php checked( $settings['enable_cart_recovery'] ?? 1 ); ?> />
+								value="1" <?php checked( $wwcc_settings['enable_cart_recovery'] ?? 1 ); ?> />
 							<p class="description">
 								<?php esc_html_e( 'Send WhatsApp reminders for abandoned carts', 'woocommerce-order-messaging-kenya' ); ?>
 							</p>
@@ -271,7 +271,7 @@ $settings = WWCC_Settings::get_all();
 						</th>
 						<td>
 							<input type="number" name="wwcc_settings[cart_recovery_hours]" id="cart_recovery_hours" 
-								value="<?php echo esc_attr( $settings['cart_recovery_hours'] ?? 2 ); ?>" 
+								value="<?php echo esc_attr( $wwcc_settings['cart_recovery_hours'] ?? 2 ); ?>" 
 								min="0" max="72" />
 							<p class="description">
 								<?php esc_html_e( 'Hours to wait before sending cart recovery message', 'woocommerce-order-messaging-kenya' ); ?>
@@ -285,7 +285,7 @@ $settings = WWCC_Settings::get_all();
 						</th>
 						<td>
 							<input type="checkbox" name="wwcc_settings[enable_mpesa_stk]" id="enable_mpesa_stk" 
-								value="1" <?php checked( $settings['enable_mpesa_stk'] ?? 1 ); ?> />
+								value="1" <?php checked( $wwcc_settings['enable_mpesa_stk'] ?? 1 ); ?> />
 							<p class="description">
 								<?php esc_html_e( 'Send payment prompts to customer phones automatically', 'woocommerce-order-messaging-kenya' ); ?>
 							</p>
@@ -298,7 +298,7 @@ $settings = WWCC_Settings::get_all();
 						</th>
 						<td>
 							<input type="checkbox" name="wwcc_settings[enable_debug]" id="enable_debug" 
-								value="1" <?php checked( $settings['enable_debug'] ?? 0 ); ?> />
+								value="1" <?php checked( $wwcc_settings['enable_debug'] ?? 0 ); ?> />
 							<p class="description">
 								<?php esc_html_e( 'Log debug information (disable in production)', 'woocommerce-order-messaging-kenya' ); ?>
 							</p>

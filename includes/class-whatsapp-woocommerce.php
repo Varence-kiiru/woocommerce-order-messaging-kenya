@@ -65,13 +65,6 @@ class WhatsApp_WooCommerce {
 		// Load dependencies first
 		$this->load_dependencies();
 
-		// Load text domain
-		load_plugin_textdomain(
-			'woocommerce-order-messaging-kenya',
-			false,
-			dirname( plugin_basename( WWCC_PLUGIN_FILE ) ) . '/languages'
-		);
-
 		// Check WooCommerce dependency
 		if ( ! $this->is_woocommerce_active() ) {
 			add_action( 'admin_notices', [ $this, 'woocommerce_missing_notice' ] );

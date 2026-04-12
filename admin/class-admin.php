@@ -244,7 +244,7 @@ class Admin_WhatsApp_WooCommerce {
 			wp_send_json_error( __( 'Permission denied', 'woocommerce-order-messaging-kenya' ) );
 		}
 
-		$phone = isset( $_POST['phone'] ) ? sanitize_text_field( $_POST['phone'] ) : '';
+		$phone = isset( $_POST['phone'] ) ? sanitize_text_field( wp_unslash( $_POST['phone'] ) ) : '';
 
 		if ( ! $phone ) {
 			wp_send_json_error( __( 'Phone number required', 'woocommerce-order-messaging-kenya' ) );

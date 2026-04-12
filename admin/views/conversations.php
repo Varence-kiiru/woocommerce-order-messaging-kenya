@@ -11,27 +11,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $wpdb;
 
-// Get conversations
-$page = isset( $_GET['paged'] ) ? intval( $_GET['paged'] ) : 1;
-$limit = 50;
-$offset = ( $page - 1 ) * $limit;
+// Get conversations.
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only admin pagination parameter.
+$wwcc_page = isset( $_GET['paged'] ) ? absint( wp_unslash( $_GET['paged'] ) ) : 1;
+$wwcc_limit = 50;
+$wwcc_offset = ( $wwcc_page - 1 ) * $wwcc_limit;
 
-$conversations = $wpdb->get_results(
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom admin report query.
+$wwcc_conversations = $wpdb->get_results(
 	$wpdb->prepare(
 		"SELECT * FROM {$wpdb->prefix}wwcc_conversations ORDER BY created_at DESC LIMIT %d OFFSET %d",
-		$limit,
-		$offset
+		$wwcc_limit,
+		$wwcc_offset
 	)
 );
 
-$total = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}wwcc_conversations" );
-$pages = ceil( $total / $limit );
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom admin report query.
+$wwcc_total = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}wwcc_conversations" );
+$wwcc_pages = ceil( $wwcc_total / $wwcc_limit );
 ?>
 
 <div class="wrap">
 	<h1><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></h1>
 
-	<?php if ( empty( $conversations ) ) : ?>
+	<?php if ( empty( $wwcc_conversations ) ) : ?>
 		<p><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></p>
 	<?php else : ?>
 		<table class="wp-list-table widefat striped">
@@ -45,29 +48,29 @@ $pages = ceil( $total / $limit );
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ( $conversations as $conv ) : ?>
+				<?php foreach ( $wwcc_conversations as $wwcc_conversation ) : ?>
 					<tr>
-						<td><?php echo esc_html( $conv->created_at ); ?></td>
-						<td><?php echo esc_html( $conv->phone_number ); ?></td>
+						<td><?php echo esc_html( $wwcc_conversation->created_at ); ?></td>
+						<td><?php echo esc_html( $wwcc_conversation->phone_number ); ?></td>
 						<td>
-							<?php if ( $conv->order_id ) : ?>
-								<a href="<?php echo esc_url( admin_url( 'post.php?post=' . $conv->order_id . '&action=edit' ) ); ?>">
-									#<?php echo esc_html( $conv->order_id ); ?>
+							<?php if ( $wwcc_conversation->order_id ) : ?>
+								<a href="<?php echo esc_url( admin_url( 'post.php?post=' . $wwcc_conversation->order_id . '&action=edit' ) ); ?>">
+									#<?php echo esc_html( $wwcc_conversation->order_id ); ?>
 								</a>
 							<?php endif; ?>
 						</td>
 						<td>
 							<span class="badge" style="background: #17a2b8; color: white; padding: 4px 8px; border-radius: 3px;">
-								<?php echo esc_html( ucfirst( str_replace( '_', ' ', $conv->action ) ) ); ?>
+								<?php echo esc_html( ucfirst( str_replace( '_', ' ', $wwcc_conversation->action ) ) ); ?>
 							</span>
 						</td>
-						<td><?php echo esc_html( substr( $conv->message, 0, 100 ) ); ?></td>
+						<td><?php echo esc_html( substr( $wwcc_conversation->message, 0, 100 ) ); ?></td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
 		</table>
 
-		<?php if ( $pages > 1 ) : ?>
+		<?php if ( $wwcc_pages > 1 ) : ?>
 			<div class="tablenav bottom">
 				<div class="tablenav-pages">
 				<?php echo wp_kses_post( paginate_links( [
@@ -75,8 +78,8 @@ $pages = ceil( $total / $limit );
 					'format'    => '%#%',
 					'prev_text' => __( '&laquo; Previous', 'woocommerce-order-messaging-kenya' ),
 					'next_text' => __( 'Next &raquo;', 'woocommerce-order-messaging-kenya' ),
-					'total'     => $pages,
-					'current'   => $page,
+					'total'     => $wwcc_pages,
+					'current'   => $wwcc_page,
 				] ) ); ?>
 				</div>
 			</div>

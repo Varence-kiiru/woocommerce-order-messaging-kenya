@@ -302,7 +302,7 @@ META WHATSAPP:
 // EXAMPLE CONFIGURATION (Fake Values)
 // ==========================================
 
-$example_config = [
+$wwcc_example_config = [
     // WhatsApp (Twilio Example)
     'whatsapp_provider'       => 'twilio',
     'business_phone'          => '+254712345678', // Your store's WhatsApp
