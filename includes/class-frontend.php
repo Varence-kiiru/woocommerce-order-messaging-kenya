@@ -77,6 +77,7 @@ function wwcc_add_product_whatsapp_button() {
 	}
 
 	// Build message
+	/* translators: 1: Product name, 2: Product price in KES */
 	$message = sprintf(
 		__( 'Hi, I want to order:\nProduct: %1$s\nPrice: KES %2$s', 'woocommerce-order-messaging-kenya' ),
 		$product->get_name(),
@@ -124,6 +125,7 @@ function wwcc_add_shop_loop_whatsapp_button() {
 	}
 
 	// Build message
+	/* translators: 1: Product name, 2: Product price in KES */
 	$message = sprintf(
 		__( 'Hi, I want to order:\nProduct: %1$s\nPrice: KES %2$s', 'woocommerce-order-messaging-kenya' ),
 		$product->get_name(),
