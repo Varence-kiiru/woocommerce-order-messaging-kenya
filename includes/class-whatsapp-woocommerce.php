@@ -159,8 +159,8 @@ class WhatsApp_WooCommerce {
 		}
 
 		// Build WhatsApp message
-		/* translators: 1: Product name, 2: Product price in KES */
 		$message = sprintf(
+			/* translators: 1: Product name, 2: Product price in KES */
 			__( 'Hi, I want to order:\nProduct: %1$s\nPrice: KES %2$s', 'woocommerce-order-messaging-kenya' ),
 			$product->get_name(),
 			$product->get_price()

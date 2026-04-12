@@ -286,6 +286,7 @@ class MPesa_Handler {
 			WhatsApp_API::get_instance()->send_message(
 				$phone,
 				sprintf(
+					/* translators: %d: Order ID. */
 					__( '❌ Payment failed for order #%d. Please try again or contact us.', 'woocommerce-order-messaging-kenya' ),
 					$order_id
 				)

@@ -170,8 +170,8 @@ class Order_Sync {
 		}
 
 		// Send confirmation
-		/* translators: 1: Order ID, 2: Order total in KES */
 		$message = sprintf(
+			/* translators: 1: Order ID, 2: Order total in KES */
 			__( '✅ Great! Your order #%1$d has been created.\n\nTotal: KES %2$s\n\nReply to confirm or adjust', 'woocommerce-order-messaging-kenya' ),
 			$order->get_id(),
 			$order->get_formatted_order_total()

@@ -310,8 +310,8 @@ class WhatsApp_API {
 		}
 
 		$phone   = $order->get_billing_phone();
-		/* translators: 1: Customer first name, 2: Order ID, 3: Order tracking URL */
 		$message = sprintf(
+			/* translators: 1: Customer first name, 2: Order ID, 3: Order tracking URL */
 			__( '🎉 Hi %1$s!\n\nYour order #%2$d has been completed and is on its way 📦\n\nTrack your order here: %3$s', 'woocommerce-order-messaging-kenya' ),
 			$order->get_billing_first_name(),
 			$order_id,
@@ -335,8 +335,8 @@ class WhatsApp_API {
 		}
 
 		$phone   = $order->get_billing_phone();
-		/* translators: 1: Customer first name, 2: Order ID, 3: Order total in KES */
 		$message = sprintf(
+			/* translators: 1: Customer first name, 2: Order ID, 3: Order total in KES */
 			__( '✅ Hi %1$s!\n\nPayment received for order #%2$d\nTotal: KES %3$s\n\nWe\'ll ship your order shortly!', 'woocommerce-order-messaging-kenya' ),
 			$order->get_billing_first_name(),
 			$order_id,

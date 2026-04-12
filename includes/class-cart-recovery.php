@@ -130,8 +130,8 @@ class Cart_Recovery {
 
 		$phone = $order->get_billing_phone();
 
-		/* translators: 1: Customer first name, 2: Order total, 3: Checkout payment URL */
 		$message = sprintf(
+			/* translators: 1: Customer first name, 2: Order total, 3: Checkout payment URL */
 			__( '👀 Hi %1$s!\n\nYou left items in your cart worth KES %2$s\n\n👉 Complete your order here: %3$s\n\nOffer expires soon! 🎁', 'woocommerce-order-messaging-kenya' ),
 			$order->get_billing_first_name(),
 			$order->get_formatted_order_total(),
