@@ -310,8 +310,9 @@ class WhatsApp_API {
 		}
 
 		$phone   = $order->get_billing_phone();
+		/* translators: 1: Customer first name, 2: Order ID, 3: Order tracking URL */
 		$message = sprintf(
-			__( '🎉 Hi %s!\n\nYour order #%d has been completed and is on its way 📦\n\nTrack your order here: %s', 'woocommerce-order-messaging-kenya' ),
+			__( '🎉 Hi %1$s!\n\nYour order #%2$d has been completed and is on its way 📦\n\nTrack your order here: %3$s', 'woocommerce-order-messaging-kenya' ),
 			$order->get_billing_first_name(),
 			$order_id,
 			$order->get_view_order_url()
@@ -334,8 +335,9 @@ class WhatsApp_API {
 		}
 
 		$phone   = $order->get_billing_phone();
+		/* translators: 1: Customer first name, 2: Order ID, 3: Order total in KES */
 		$message = sprintf(
-			__( '✅ Hi %s!\n\nPayment received for order #%d\nTotal: KES %s\n\nWe\'ll ship your order shortly!', 'woocommerce-order-messaging-kenya' ),
+			__( '✅ Hi %1$s!\n\nPayment received for order #%2$d\nTotal: KES %3$s\n\nWe\'ll ship your order shortly!', 'woocommerce-order-messaging-kenya' ),
 			$order->get_billing_first_name(),
 			$order_id,
 			$order->get_formatted_order_total()
@@ -356,8 +358,9 @@ class WhatsApp_API {
 			$items .= sprintf( "• %s x%d - KES %s\n", $item->get_name(), $item->get_quantity(), $item->get_total() );
 		}
 
+		/* translators: 1: Customer first name, 2: Order ID, 3: Order items list, 4: Order total in KES, 5: M-Pesa till number */
 		return sprintf(
-			__( "👋 Hi %s!\n\nYour order #%d has been received!\n\n%sTotal: KES %s\n\n💰 Pay via M-Pesa to: %s\n\nThank you! 🙏", 'woocommerce-order-messaging-kenya' ),
+			__( "👋 Hi %1\$s!\n\nYour order #%2\$d has been received!\n\n%3\$sTotal: KES %4\$s\n\n💰 Pay via M-Pesa to: %5\$s\n\nThank you! 🙏", 'woocommerce-order-messaging-kenya' ),
 			$order->get_billing_first_name(),
 			$order->get_id(),
 			$items,

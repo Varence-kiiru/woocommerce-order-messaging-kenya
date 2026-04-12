@@ -70,14 +70,14 @@ $pages = ceil( $total / $limit );
 		<?php if ( $pages > 1 ) : ?>
 			<div class="tablenav bottom">
 				<div class="tablenav-pages">
-					<?php echo paginate_links( [
-						'base'      => admin_url( 'admin.php?page=wwcc-conversations&paged=%#%' ),
-						'format'    => '%#%',
-						'prev_text' => __( '&laquo; Previous' ),
-						'next_text' => __( 'Next &raquo;' ),
-						'total'     => $pages,
-						'current'   => $page,
-					] ); ?>
+				<?php echo wp_kses_post( paginate_links( [
+					'base'      => admin_url( 'admin.php?page=wwcc-conversations&paged=%#%' ),
+					'format'    => '%#%',
+					'prev_text' => __( '&laquo; Previous', 'woocommerce-order-messaging-kenya' ),
+					'next_text' => __( 'Next &raquo;', 'woocommerce-order-messaging-kenya' ),
+					'total'     => $pages,
+					'current'   => $page,
+				] ) ); ?>
 				</div>
 			</div>
 		<?php endif; ?>

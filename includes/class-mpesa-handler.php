@@ -364,7 +364,8 @@ class MPesa_Handler {
 		WhatsApp_API::get_instance()->send_message(
 			$phone_number,
 			sprintf(
-				__( '💰 Please complete payment for order #%d\nAmount: KES %s\nA prompt will appear on your phone shortly', 'woocommerce-order-messaging-kenya' ),
+				/* translators: 1: Order ID, 2: Payment amount in KES */
+				__( '💰 Please complete payment for order #%1$d\nAmount: KES %2$s\nA prompt will appear on your phone shortly', 'woocommerce-order-messaging-kenya' ),
 				$order_id,
 				$amount
 			)
