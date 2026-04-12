@@ -1,26 +1,26 @@
-=== WhatsApp WooCommerce Kenya ===
+=== WooCommerce Order Messaging Kenya ===
 Contributors: Varence Kiiru
-Tags: whatsapp, woocommerce, e-commerce, messaging, mpesa, kenya
+Tags: woocommerce, e-commerce, messaging, mpesa, kenya
 Requires at least: 5.0
 Requires PHP: 7.4
-Tested up to: 6.9.4
+Tested up to: 6.9
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Complete WhatsApp + WooCommerce automation for Kenya with M-Pesa payment integration, order notifications, and cart recovery.
+Complete order messaging and M-Pesa payment automation for WooCommerce Kenya (via Twilio, with order notifications, and cart recovery).
 
 == Description ==
 
-WhatsApp WooCommerce Kenya is a comprehensive plugin that seamlessly integrates WhatsApp messaging and M-Pesa payment processing with your WooCommerce store.
+WooCommerce Order Messaging Kenya is a comprehensive plugin that seamlessly integrates order messaging (via Twilio) and M-Pesa payment processing with your WooCommerce store.
 
 **Key Features:**
 
-* **WhatsApp Order Integration** - Customers can initiate orders directly via WhatsApp
+* **Order Messaging Integration** - Customers can initiate orders directly via Twilio messaging platform
 * **M-Pesa Payment Gateway** - Accept payments via M-Pesa using the Daraja API
-* **Order Notifications** - Receive WhatsApp notifications for new orders
+* **Message Notifications** - Receive messaging notifications for new orders
 * **Cart Recovery** - Automatic cart abandonment recovery campaigns
-* **Admin Dashboard** - Monitor WhatsApp conversations and M-Pesa transactions
+* **Admin Dashboard** - Monitor conversations and M-Pesa transactions
 * **Settings Management** - Easy configuration for Twilio and Daraja credentials
 
 **Requirements:**

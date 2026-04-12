@@ -152,7 +152,7 @@ class Order_Sync {
 			// Send message asking for order details
 			WhatsApp_API::get_instance()->send_message(
 				$customer_data['phone'],
-				__( 'Hi! Please share the product name and quantity you want to order. Example: Nike Shoes, 2', 'whatsapp-woocommerce' )
+				__( 'Hi! Please share the product name and quantity you want to order. Example: Nike Shoes, 2', 'woocommerce-order-messaging-kenya' )
 			);
 			return;
 		}
@@ -164,7 +164,7 @@ class Order_Sync {
 			WhatsApp_API::get_instance()->send_message(
 				$customer_data['phone'],
 				sprintf(
-					__( 'Sorry, we couldn\'t create your order. Error: %s', 'whatsapp-woocommerce' ),
+					__( 'Sorry, we couldn\'t create your order. Error: %s', 'woocommerce-order-messaging-kenya' ),
 					$order->get_error_message()
 				)
 			);
@@ -173,7 +173,7 @@ class Order_Sync {
 
 		// Send confirmation
 		$message = sprintf(
-			__( '✅ Great! Your order #%d has been created.\n\nTotal: KES %s\n\nReply to confirm or adjust', 'whatsapp-woocommerce' ),
+			__( '✅ Great! Your order #%d has been created.\n\nTotal: KES %s\n\nReply to confirm or adjust', 'woocommerce-order-messaging-kenya' ),
 			$order->get_id(),
 			$order->get_formatted_order_total()
 		);

@@ -108,12 +108,12 @@ class WhatsApp_API {
 		$phone_number = $this->sanitize_phone( $phone_number );
 
 		if ( ! $phone_number ) {
-			return new WP_Error( 'invalid_phone', __( 'Invalid phone number', 'whatsapp-woocommerce' ) );
+			return new WP_Error( 'invalid_phone', __( 'Invalid phone number', 'woocommerce-order-messaging-kenya' ) );
 		}
 
 		// Check if API is configured
 		if ( ! $this->is_configured() ) {
-			return new WP_Error( 'not_configured', __( 'WhatsApp API not configured', 'whatsapp-woocommerce' ) );
+			return new WP_Error( 'not_configured', __( 'WhatsApp API not configured', 'woocommerce-order-messaging-kenya' ) );
 		}
 
 		if ( 'twilio' === $this->provider ) {
@@ -122,7 +122,7 @@ class WhatsApp_API {
 			return $this->send_via_meta( $phone_number, $message, $args );
 		}
 
-		return new WP_Error( 'unknown_provider', __( 'Unknown WhatsApp provider', 'whatsapp-woocommerce' ) );
+		return new WP_Error( 'unknown_provider', __( 'Unknown WhatsApp provider', 'woocommerce-order-messaging-kenya' ) );
 	}
 
 	/**
@@ -172,7 +172,7 @@ class WhatsApp_API {
 
 		return new WP_Error(
 			'twilio_error',
-			isset( $body['message'] ) ? $body['message'] : __( 'Failed to send WhatsApp message', 'whatsapp-woocommerce' )
+			isset( $body['message'] ) ? $body['message'] : __( 'Failed to send WhatsApp message', 'woocommerce-order-messaging-kenya' )
 		);
 	}
 
@@ -230,7 +230,7 @@ class WhatsApp_API {
 
 		return new WP_Error(
 			'meta_error',
-			isset( $body['error']['message'] ) ? $body['error']['message'] : __( 'Failed to send WhatsApp message', 'whatsapp-woocommerce' )
+			isset( $body['error']['message'] ) ? $body['error']['message'] : __( 'Failed to send WhatsApp message', 'woocommerce-order-messaging-kenya' )
 		);
 	}
 
@@ -311,7 +311,7 @@ class WhatsApp_API {
 
 		$phone   = $order->get_billing_phone();
 		$message = sprintf(
-			__( '🎉 Hi %s!\n\nYour order #%d has been completed and is on its way 📦\n\nTrack your order here: %s', 'whatsapp-woocommerce' ),
+			__( '🎉 Hi %s!\n\nYour order #%d has been completed and is on its way 📦\n\nTrack your order here: %s', 'woocommerce-order-messaging-kenya' ),
 			$order->get_billing_first_name(),
 			$order_id,
 			$order->get_view_order_url()
@@ -335,7 +335,7 @@ class WhatsApp_API {
 
 		$phone   = $order->get_billing_phone();
 		$message = sprintf(
-			__( '✅ Hi %s!\n\nPayment received for order #%d\nTotal: KES %s\n\nWe\'ll ship your order shortly!', 'whatsapp-woocommerce' ),
+			__( '✅ Hi %s!\n\nPayment received for order #%d\nTotal: KES %s\n\nWe\'ll ship your order shortly!', 'woocommerce-order-messaging-kenya' ),
 			$order->get_billing_first_name(),
 			$order_id,
 			$order->get_formatted_order_total()
@@ -357,7 +357,7 @@ class WhatsApp_API {
 		}
 
 		return sprintf(
-			__( "👋 Hi %s!\n\nYour order #%d has been received!\n\n%sTotal: KES %s\n\n💰 Pay via M-Pesa to: %s\n\nThank you! 🙏", 'whatsapp-woocommerce' ),
+			__( "👋 Hi %s!\n\nYour order #%d has been received!\n\n%sTotal: KES %s\n\n💰 Pay via M-Pesa to: %s\n\nThank you! 🙏", 'woocommerce-order-messaging-kenya' ),
 			$order->get_billing_first_name(),
 			$order->get_id(),
 			$items,

@@ -4,13 +4,17 @@
  * Place this in your WordPress root and access via http://localhost/debug-settings.php
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // Load WordPress
 require_once( dirname( __FILE__ ) . '/wp-load.php' );
 
 // Check if plugin is active
 $active_plugins = get_option( 'active_plugins' );
 echo "<h2>Plugin Status</h2>";
-echo "Active: " . ( in_array( 'whatsapp-woocommerce/whatsapp-woocommerce.php', $active_plugins ) ? 'YES ✓' : 'NO ✗' ) . "<br>";
+echo "Active: " . ( in_array( 'woocommerce-order-messaging-kenya/woocommerce-order-messaging-kenya.php', $active_plugins ) ? 'YES ✓' : 'NO ✗' ) . "<br>";
 
 // Check settings in database
 echo "<h2>Settings Stored in Database</h2>";

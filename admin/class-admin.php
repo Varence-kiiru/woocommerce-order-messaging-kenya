@@ -57,8 +57,8 @@ class Admin_WhatsApp_WooCommerce {
 	 */
 	public function add_admin_menu() {
 		add_menu_page(
-			__( 'WhatsApp WooCommerce', 'whatsapp-woocommerce' ),
-			__( 'WhatsApp Settings', 'whatsapp-woocommerce' ),
+			__( 'WhatsApp WooCommerce', 'woocommerce-order-messaging-kenya' ),
+			__( 'WhatsApp Settings', 'woocommerce-order-messaging-kenya' ),
 			'manage_options',
 			'wwcc-settings',
 			[ $this, 'render_settings_page' ],
@@ -67,8 +67,8 @@ class Admin_WhatsApp_WooCommerce {
 
 		add_submenu_page(
 			'wwcc-settings',
-			__( 'Message Logs', 'whatsapp-woocommerce' ),
-			__( 'Message Logs', 'whatsapp-woocommerce' ),
+			__( 'Message Logs', 'woocommerce-order-messaging-kenya' ),
+			__( 'Message Logs', 'woocommerce-order-messaging-kenya' ),
 			'manage_options',
 			'wwcc-logs',
 			[ $this, 'render_logs_page' ]
@@ -76,8 +76,8 @@ class Admin_WhatsApp_WooCommerce {
 
 		add_submenu_page(
 			'wwcc-settings',
-			__( 'Conversations', 'whatsapp-woocommerce' ),
-			__( 'Conversations', 'whatsapp-woocommerce' ),
+			__( 'Conversations', 'woocommerce-order-messaging-kenya' ),
+			__( 'Conversations', 'woocommerce-order-messaging-kenya' ),
 			'manage_options',
 			'wwcc-conversations',
 			[ $this, 'render_conversations_page' ]
@@ -114,11 +114,11 @@ class Admin_WhatsApp_WooCommerce {
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( 'wwcc_nonce' ),
 				'strings' => [
-					'testing'         => __( 'Testing...', 'whatsapp-woocommerce' ),
-					'success'         => __( 'Success!', 'whatsapp-woocommerce' ),
-					'error'           => __( 'Error', 'whatsapp-woocommerce' ),
-					'message_sent'    => __( 'Message sent successfully!', 'whatsapp-woocommerce' ),
-					'confirm_delete'  => __( 'Are you sure?', 'whatsapp-woocommerce' ),
+					'testing'         => __( 'Testing...', 'woocommerce-order-messaging-kenya' ),
+					'success'         => __( 'Success!', 'woocommerce-order-messaging-kenya' ),
+					'error'           => __( 'Error', 'woocommerce-order-messaging-kenya' ),
+					'message_sent'    => __( 'Message sent successfully!', 'woocommerce-order-messaging-kenya' ),
+					'confirm_delete'  => __( 'Are you sure?', 'woocommerce-order-messaging-kenya' ),
 				],
 			]
 		);
@@ -183,7 +183,7 @@ class Admin_WhatsApp_WooCommerce {
 	 */
 	public function render_settings_page() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'You do not have permission to access this page', 'whatsapp-woocommerce' ) );
+			wp_die( __( 'You do not have permission to access this page', 'woocommerce-order-messaging-kenya' ) );
 		}
 
 		require_once WWCC_PLUGIN_DIR . 'admin/views/settings.php';
@@ -194,7 +194,7 @@ class Admin_WhatsApp_WooCommerce {
 	 */
 	public function render_logs_page() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'You do not have permission to access this page', 'whatsapp-woocommerce' ) );
+			wp_die( __( 'You do not have permission to access this page', 'woocommerce-order-messaging-kenya' ) );
 		}
 
 		require_once WWCC_PLUGIN_DIR . 'admin/views/logs.php';
@@ -205,7 +205,7 @@ class Admin_WhatsApp_WooCommerce {
 	 */
 	public function render_conversations_page() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'You do not have permission to access this page', 'whatsapp-woocommerce' ) );
+			wp_die( __( 'You do not have permission to access this page', 'woocommerce-order-messaging-kenya' ) );
 		}
 
 		require_once WWCC_PLUGIN_DIR . 'admin/views/conversations.php';
@@ -218,7 +218,7 @@ class Admin_WhatsApp_WooCommerce {
 		check_ajax_referer( 'wwcc_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( __( 'Permission denied', 'whatsapp-woocommerce' ) );
+			wp_send_json_error( __( 'Permission denied', 'woocommerce-order-messaging-kenya' ) );
 		}
 
 		$mpesa = MPesa_Handler::get_instance();
@@ -229,7 +229,7 @@ class Admin_WhatsApp_WooCommerce {
 		}
 
 		wp_send_json_success( [
-			'message' => __( 'M-Pesa API connection successful!', 'whatsapp-woocommerce' ),
+			'message' => __( 'M-Pesa API connection successful!', 'woocommerce-order-messaging-kenya' ),
 			'token'   => substr( $token, 0, 20 ) . '...',
 		] );
 	}
@@ -241,18 +241,18 @@ class Admin_WhatsApp_WooCommerce {
 		check_ajax_referer( 'wwcc_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( __( 'Permission denied', 'whatsapp-woocommerce' ) );
+			wp_send_json_error( __( 'Permission denied', 'woocommerce-order-messaging-kenya' ) );
 		}
 
 		$phone = isset( $_POST['phone'] ) ? sanitize_text_field( $_POST['phone'] ) : '';
 
 		if ( ! $phone ) {
-			wp_send_json_error( __( 'Phone number required', 'whatsapp-woocommerce' ) );
+			wp_send_json_error( __( 'Phone number required', 'woocommerce-order-messaging-kenya' ) );
 		}
 
 		$result = WhatsApp_API::get_instance()->send_message(
 			$phone,
-			__( '✅ WhatsApp API Test - Connection Successful!', 'whatsapp-woocommerce' )
+			__( '✅ WhatsApp API Test - Connection Successful!', 'woocommerce-order-messaging-kenya' )
 		);
 
 		if ( is_wp_error( $result ) ) {
@@ -260,7 +260,7 @@ class Admin_WhatsApp_WooCommerce {
 		}
 
 		wp_send_json_success( [
-			'message' => __( 'Test message sent successfully!', 'whatsapp-woocommerce' ),
+			'message' => __( 'Test message sent successfully!', 'woocommerce-order-messaging-kenya' ),
 		] );
 	}
 
@@ -271,13 +271,13 @@ class Admin_WhatsApp_WooCommerce {
 		check_ajax_referer( 'wwcc_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'manage_orders' ) ) {
-			wp_send_json_error( __( 'Permission denied', 'whatsapp-woocommerce' ) );
+			wp_send_json_error( __( 'Permission denied', 'woocommerce-order-messaging-kenya' ) );
 		}
 
 		$order_id = isset( $_POST['order_id'] ) ? intval( $_POST['order_id'] ) : 0;
 
 		if ( ! $order_id ) {
-			wp_send_json_error( __( 'Invalid order', 'whatsapp-woocommerce' ) );
+			wp_send_json_error( __( 'Invalid order', 'woocommerce-order-messaging-kenya' ) );
 		}
 
 		$mpesa = MPesa_Handler::get_instance();
@@ -288,7 +288,7 @@ class Admin_WhatsApp_WooCommerce {
 		}
 
 		wp_send_json_success( [
-			'message'  => __( 'Payment prompt sent to customer!', 'whatsapp-woocommerce' ),
+			'message'  => __( 'Payment prompt sent to customer!', 'woocommerce-order-messaging-kenya' ),
 			'checkout' => $result,
 		] );
 	}

@@ -2,7 +2,12 @@
 /**
  * Configuration Example
  *
- * This file shows how to configure the WhatsApp WooCommerce Kenya plugin.
+ * This file shows how to configure the WooCommerce Order Messaging Kenya plugin.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
  * Copy settings from your API providers and add them to WordPress admin.
  *
  * @package WhatsApp_WooCommerce

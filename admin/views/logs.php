@@ -29,19 +29,19 @@ $pages = ceil( $total / $limit );
 ?>
 
 <div class="wrap">
-	<h1><?php _e( 'WhatsApp Message Logs', 'whatsapp-woocommerce' ); ?></h1>
+	<h1><?php _e( 'WhatsApp Message Logs', 'woocommerce-order-messaging-kenya' ); ?></h1>
 
 	<?php if ( empty( $logs ) ) : ?>
-		<p><?php _e( 'No messages sent yet.', 'whatsapp-woocommerce' ); ?></p>
+		<p><?php _e( 'No messages sent yet.', 'woocommerce-order-messaging-kenya' ); ?></p>
 	<?php else : ?>
 		<table class="wp-list-table widefat striped">
 			<thead>
 				<tr>
-					<th><?php _e( 'Time', 'whatsapp-woocommerce' ); ?></th>
-					<th><?php _e( 'Order', 'whatsapp-woocommerce' ); ?></th>
-					<th><?php _e( 'Phone', 'whatsapp-woocommerce' ); ?></th>
-					<th><?php _e( 'Type', 'whatsapp-woocommerce' ); ?></th>
-					<th><?php _e( 'Message', 'whatsapp-woocommerce' ); ?></th>
+					<th><?php _e( 'Time', 'woocommerce-order-messaging-kenya' ); ?></th>
+					<th><?php _e( 'Order', 'woocommerce-order-messaging-kenya' ); ?></th>
+					<th><?php _e( 'Phone', 'woocommerce-order-messaging-kenya' ); ?></th>
+					<th><?php _e( 'Type', 'woocommerce-order-messaging-kenya' ); ?></th>
+					<th><?php _e( 'Message', 'woocommerce-order-messaging-kenya' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>

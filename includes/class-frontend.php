@@ -78,7 +78,7 @@ function wwcc_add_product_whatsapp_button() {
 
 	// Build message
 	$message = sprintf(
-		__( 'Hi, I want to order:\nProduct: %s\nPrice: KES %s', 'whatsapp-woocommerce' ),
+		__( 'Hi, I want to order:\nProduct: %1$s\nPrice: KES %2$s', 'woocommerce-order-messaging-kenya' ),
 		$product->get_name(),
 		$product->get_price()
 	);
@@ -96,7 +96,7 @@ function wwcc_add_product_whatsapp_button() {
 		</a>',
 		esc_url( $whatsapp_url ),
 		esc_url( $icon_url ),
-		esc_html__( 'Order via WhatsApp', 'whatsapp-woocommerce' )
+		esc_html__( 'Order via WhatsApp', 'woocommerce-order-messaging-kenya' )
 	);
 }
 
@@ -125,7 +125,7 @@ function wwcc_add_shop_loop_whatsapp_button() {
 
 	// Build message
 	$message = sprintf(
-		__( 'Hi, I want to order:\nProduct: %s\nPrice: KES %s', 'whatsapp-woocommerce' ),
+		__( 'Hi, I want to order:\nProduct: %1$s\nPrice: KES %2$s', 'woocommerce-order-messaging-kenya' ),
 		$product->get_name(),
 		$product->get_price()
 	);
@@ -143,7 +143,7 @@ function wwcc_add_shop_loop_whatsapp_button() {
 		</a>',
 		esc_url( $whatsapp_url ),
 		esc_url( $icon_url ),
-		esc_html__( 'Order via WhatsApp', 'whatsapp-woocommerce' )
+		esc_html__( 'Order via WhatsApp', 'woocommerce-order-messaging-kenya' )
 	);
 }
 
