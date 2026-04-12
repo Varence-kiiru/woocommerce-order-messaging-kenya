@@ -104,7 +104,7 @@ class MPesa_Handler {
 
 		// Check if credentials are set
 		if ( ! $this->consumer_key || ! $this->consumer_secret ) {
-			return new WP_Error( 'missing_credentials', __( 'M-Pesa credentials not configured', 'woocommerce-order-messaging-kenya' ) );
+			return new WP_Error( 'missing_credentials', __( 'M-Pesa credentials not configured', 'order-messaging-for-woocommerce-kenya' ) );
 		}
 
 		$url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
@@ -131,7 +131,7 @@ class MPesa_Handler {
 			return $body['access_token'];
 		}
 
-		return new WP_Error( 'token_error', __( 'Failed to get M-Pesa access token', 'woocommerce-order-messaging-kenya' ) );
+		return new WP_Error( 'token_error', __( 'Failed to get M-Pesa access token', 'order-messaging-for-woocommerce-kenya' ) );
 	}
 
 	/**
@@ -158,7 +158,7 @@ class MPesa_Handler {
 		}
 
 		if ( strlen( $phone ) !== 12 ) {
-			return new WP_Error( 'invalid_phone', __( 'Invalid phone number for STK Push', 'woocommerce-order-messaging-kenya' ) );
+			return new WP_Error( 'invalid_phone', __( 'Invalid phone number for STK Push', 'order-messaging-for-woocommerce-kenya' ) );
 		}
 
 		$timestamp = gmdate( 'YmdHis' );
@@ -213,7 +213,7 @@ class MPesa_Handler {
 
 		return new WP_Error(
 			'stk_error',
-			$body['ResponseDescription'] ?? __( 'STK Push failed', 'woocommerce-order-messaging-kenya' )
+			$body['ResponseDescription'] ?? __( 'STK Push failed', 'order-messaging-for-woocommerce-kenya' )
 		);
 	}
 
@@ -267,7 +267,7 @@ class MPesa_Handler {
 
 			// Mark order as paid
 			$order->payment_complete();
-			$order->update_status( 'processing', __( 'M-Pesa payment confirmed', 'woocommerce-order-messaging-kenya' ) );
+			$order->update_status( 'processing', __( 'M-Pesa payment confirmed', 'order-messaging-for-woocommerce-kenya' ) );
 
 			// Log transaction
 			$this->log_transaction( $order_id, $phone, $order->get_total(), 'stk_push', 'completed' );
@@ -277,7 +277,7 @@ class MPesa_Handler {
 		} else {
 			// Payment failed
 			$phone = $order->get_billing_phone();
-			$order->update_status( 'failed', __( 'M-Pesa payment was cancelled', 'woocommerce-order-messaging-kenya' ) );
+			$order->update_status( 'failed', __( 'M-Pesa payment was cancelled', 'order-messaging-for-woocommerce-kenya' ) );
 
 			// Log transaction
 			$this->log_transaction( $order_id, $phone, $order->get_total(), 'stk_push', 'failed' );
@@ -287,7 +287,7 @@ class MPesa_Handler {
 				$phone,
 				sprintf(
 					/* translators: %d: Order ID. */
-					__( '❌ Payment failed for order #%d. Please try again or contact us.', 'woocommerce-order-messaging-kenya' ),
+					__( '❌ Payment failed for order #%d. Please try again or contact us.', 'order-messaging-for-woocommerce-kenya' ),
 					$order_id
 				)
 			);
@@ -368,7 +368,7 @@ class MPesa_Handler {
 			$phone_number,
 			sprintf(
 				/* translators: 1: Order ID, 2: Payment amount in KES */
-				__( '💰 Please complete payment for order #%1$d\nAmount: KES %2$s\nA prompt will appear on your phone shortly', 'woocommerce-order-messaging-kenya' ),
+				__( '💰 Please complete payment for order #%1$d\nAmount: KES %2$s\nA prompt will appear on your phone shortly', 'order-messaging-for-woocommerce-kenya' ),
 				$order_id,
 				$amount
 			)

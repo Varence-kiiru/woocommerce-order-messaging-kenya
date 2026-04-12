@@ -103,7 +103,7 @@ class WhatsApp_WooCommerce {
 	public function woocommerce_missing_notice() {
 		echo '<div class="notice notice-error"><p>';
 		echo wp_kses_post(
-			__( 'WhatsApp WooCommerce requires WooCommerce to be installed and active.', 'woocommerce-order-messaging-kenya' )
+			__( 'WhatsApp WooCommerce requires WooCommerce to be installed and active.', 'order-messaging-for-woocommerce-kenya' )
 		);
 		echo '</p></div>';
 	}
@@ -115,7 +115,7 @@ class WhatsApp_WooCommerce {
 		$settings_link = sprintf(
 			'<a href="%s">%s</a>',
 			admin_url( 'admin.php?page=wwcc-settings' ),
-			__( 'Settings', 'woocommerce-order-messaging-kenya' )
+			__( 'Settings', 'order-messaging-for-woocommerce-kenya' )
 		);
 		array_unshift( $links, $settings_link );
 		return $links;
@@ -138,23 +138,23 @@ class WhatsApp_WooCommerce {
 		$product_id = isset( $_POST['product_id'] ) ? intval( $_POST['product_id'] ) : 0;
 
 		if ( ! $product_id ) {
-			wp_send_json_error( __( 'Invalid product', 'woocommerce-order-messaging-kenya' ) );
+			wp_send_json_error( __( 'Invalid product', 'order-messaging-for-woocommerce-kenya' ) );
 		}
 
 		$product = wc_get_product( $product_id );
 		if ( ! $product ) {
-			wp_send_json_error( __( 'Product not found', 'woocommerce-order-messaging-kenya' ) );
+			wp_send_json_error( __( 'Product not found', 'order-messaging-for-woocommerce-kenya' ) );
 		}
 
 		$phone_number = WWCC_Settings::get( 'business_phone' );
 		if ( ! $phone_number ) {
-			wp_send_json_error( __( 'Store WhatsApp not configured', 'woocommerce-order-messaging-kenya' ) );
+			wp_send_json_error( __( 'Store WhatsApp not configured', 'order-messaging-for-woocommerce-kenya' ) );
 		}
 
 		// Build WhatsApp message
 		$message = sprintf(
 			/* translators: 1: Product name, 2: Product price in KES */
-			__( 'Hi, I want to order:\nProduct: %1$s\nPrice: KES %2$s', 'woocommerce-order-messaging-kenya' ),
+			__( 'Hi, I want to order:\nProduct: %1$s\nPrice: KES %2$s', 'order-messaging-for-woocommerce-kenya' ),
 			$product->get_name(),
 			$product->get_price()
 		);
@@ -170,7 +170,7 @@ class WhatsApp_WooCommerce {
 	public static function activate() {
 		// Check WooCommerce
 		if ( ! class_exists( 'WooCommerce' ) ) {
-			wp_die( esc_html__( 'WooCommerce must be installed and active', 'woocommerce-order-messaging-kenya' ) );
+			wp_die( esc_html__( 'WooCommerce must be installed and active', 'order-messaging-for-woocommerce-kenya' ) );
 		}
 
 		// Load all dependencies for activation

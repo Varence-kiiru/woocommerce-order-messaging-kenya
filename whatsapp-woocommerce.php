@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name: Order Messaging for WooCommerce Kenya
- * Plugin URI: https://github.com/Varence-kiiru/woocommerce-order-messaging-kenya
+ * Plugin URI: https://github.com/Varence-kiiru/order-messaging-for-woocommerce-kenya
  * Description: Complete order messaging and M-Pesa payment automation for WooCommerce in Kenya (via Twilio, with order notifications, and cart recovery)
  * Version: 1.0.0
  * Author: Varence Kiiru
  * Author URI: https://github.com/Varence-kiiru
  * License: GPL2
- * Text Domain: woocommerce-order-messaging-kenya
+ * Text Domain: order-messaging-for-woocommerce-kenya
  * Domain Path: /languages
  * Requires at least: 5.0
  * Requires PHP: 7.4

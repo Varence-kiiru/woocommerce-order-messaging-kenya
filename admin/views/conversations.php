@@ -32,19 +32,19 @@ $wwcc_pages = ceil( $wwcc_total / $wwcc_limit );
 ?>
 
 <div class="wrap">
-	<h1><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></h1>
+	<h1><?php esc_htmlesc_html_e( '', 'order-messaging-for-woocommerce-kenya' ); ?></h1>
 
 	<?php if ( empty( $wwcc_conversations ) ) : ?>
-		<p><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></p>
+		<p><?php esc_htmlesc_html_e( '', 'order-messaging-for-woocommerce-kenya' ); ?></p>
 	<?php else : ?>
 		<table class="wp-list-table widefat striped">
 			<thead>
 				<tr>
-					<th><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></th>
-					<th><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></th>
-					<th><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></th>
-					<th><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></th>
-					<th><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></th>
+					<th><?php esc_htmlesc_html_e( '', 'order-messaging-for-woocommerce-kenya' ); ?></th>
+					<th><?php esc_htmlesc_html_e( '', 'order-messaging-for-woocommerce-kenya' ); ?></th>
+					<th><?php esc_htmlesc_html_e( '', 'order-messaging-for-woocommerce-kenya' ); ?></th>
+					<th><?php esc_htmlesc_html_e( '', 'order-messaging-for-woocommerce-kenya' ); ?></th>
+					<th><?php esc_htmlesc_html_e( '', 'order-messaging-for-woocommerce-kenya' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -76,8 +76,8 @@ $wwcc_pages = ceil( $wwcc_total / $wwcc_limit );
 				<?php echo wp_kses_post( paginate_links( [
 					'base'      => admin_url( 'admin.php?page=wwcc-conversations&paged=%#%' ),
 					'format'    => '%#%',
-					'prev_text' => __( '&laquo; Previous', 'woocommerce-order-messaging-kenya' ),
-					'next_text' => __( 'Next &raquo;', 'woocommerce-order-messaging-kenya' ),
+					'prev_text' => __( '&laquo; Previous', 'order-messaging-for-woocommerce-kenya' ),
+					'next_text' => __( 'Next &raquo;', 'order-messaging-for-woocommerce-kenya' ),
 					'total'     => $wwcc_pages,
 					'current'   => $wwcc_page,
 				] ) ); ?>
