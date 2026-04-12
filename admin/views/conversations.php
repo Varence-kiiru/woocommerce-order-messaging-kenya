@@ -29,19 +29,19 @@ $pages = ceil( $total / $limit );
 ?>
 
 <div class="wrap">
-	<h1><?php _e( 'WhatsApp Conversations', 'woocommerce-order-messaging-kenya' ); ?></h1>
+	<h1><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></h1>
 
 	<?php if ( empty( $conversations ) ) : ?>
-		<p><?php _e( 'No conversations yet.', 'woocommerce-order-messaging-kenya' ); ?></p>
+		<p><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></p>
 	<?php else : ?>
 		<table class="wp-list-table widefat striped">
 			<thead>
 				<tr>
-					<th><?php _e( 'Date', 'woocommerce-order-messaging-kenya' ); ?></th>
-					<th><?php _e( 'Phone', 'woocommerce-order-messaging-kenya' ); ?></th>
-					<th><?php _e( 'Order', 'woocommerce-order-messaging-kenya' ); ?></th>
-					<th><?php _e( 'Action', 'woocommerce-order-messaging-kenya' ); ?></th>
-					<th><?php _e( 'Message', 'woocommerce-order-messaging-kenya' ); ?></th>
+					<th><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></th>
+					<th><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></th>
+					<th><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></th>
+					<th><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></th>
+					<th><?php esc_htmlesc_html_e( '', 'woocommerce-order-messaging-kenya' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -83,3 +83,4 @@ $pages = ceil( $total / $limit );
 		<?php endif; ?>
 	<?php endif; ?>
 </div>
+

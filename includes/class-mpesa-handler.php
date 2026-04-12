@@ -161,7 +161,7 @@ class MPesa_Handler {
 			return new WP_Error( 'invalid_phone', __( 'Invalid phone number for STK Push', 'woocommerce-order-messaging-kenya' ) );
 		}
 
-		$timestamp = date( 'YmdHis' );
+		$timestamp = gmdate( 'YmdHis' );
 		$password  = base64_encode( $this->till_number . WWCC_Settings::get( 'mpesa_passkey' ) . $timestamp );
 
 		$url = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';

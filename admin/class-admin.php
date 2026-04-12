@@ -183,7 +183,7 @@ class Admin_WhatsApp_WooCommerce {
 	 */
 	public function render_settings_page() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'You do not have permission to access this page', 'woocommerce-order-messaging-kenya' ) );
+			wp_die( esc_html__( 'You do not have permission to access this page', 'woocommerce-order-messaging-kenya' ) );
 		}
 
 		require_once WWCC_PLUGIN_DIR . 'admin/views/settings.php';
@@ -194,7 +194,7 @@ class Admin_WhatsApp_WooCommerce {
 	 */
 	public function render_logs_page() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'You do not have permission to access this page', 'woocommerce-order-messaging-kenya' ) );
+			wp_die( esc_html__( 'You do not have permission to access this page', 'woocommerce-order-messaging-kenya' ) );
 		}
 
 		require_once WWCC_PLUGIN_DIR . 'admin/views/logs.php';
@@ -205,7 +205,7 @@ class Admin_WhatsApp_WooCommerce {
 	 */
 	public function render_conversations_page() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'You do not have permission to access this page', 'woocommerce-order-messaging-kenya' ) );
+			wp_die( esc_html__( 'You do not have permission to access this page', 'woocommerce-order-messaging-kenya' ) );
 		}
 
 		require_once WWCC_PLUGIN_DIR . 'admin/views/conversations.php';

@@ -1,6 +1,6 @@
-=== WooCommerce Order Messaging Kenya ===
+=== Order Messaging for WooCommerce Kenya ===
 Contributors: Varence Kiiru
-Tags: woocommerce, e-commerce, messaging, mpesa, kenya
+Tags: order-messaging, woocommerce, e-commerce, messaging, mpesa, kenya
 Requires at least: 5.0
 Requires PHP: 7.4
 Tested up to: 6.9
@@ -8,11 +8,11 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Complete order messaging and M-Pesa payment automation for WooCommerce Kenya (via Twilio, with order notifications, and cart recovery).
+Complete order messaging and M-Pesa payment automation for WooCommerce in Kenya (via Twilio, with order notifications, and cart recovery).
 
 == Description ==
 
-WooCommerce Order Messaging Kenya is a comprehensive plugin that seamlessly integrates order messaging (via Twilio) and M-Pesa payment processing with your WooCommerce store.
+Order Messaging for WooCommerce Kenya is a comprehensive plugin that seamlessly integrates order messaging (via Twilio) and M-Pesa payment processing with your WooCommerce store.
 
 **Key Features:**
 

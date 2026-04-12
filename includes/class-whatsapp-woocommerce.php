@@ -174,7 +174,7 @@ class WhatsApp_WooCommerce {
 	public static function activate() {
 		// Check WooCommerce
 		if ( ! class_exists( 'WooCommerce' ) ) {
-			wp_die( __( 'WooCommerce must be installed and active', 'woocommerce-order-messaging-kenya' ) );
+			wp_die( esc_html__( 'WooCommerce must be installed and active', 'woocommerce-order-messaging-kenya' ) );
 		}
 
 		// Create database tables
