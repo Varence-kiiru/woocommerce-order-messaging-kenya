@@ -13,7 +13,7 @@
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
  *
- * @package Order_Messaging_For_WooCommerce_Kenya
+ * @package PesaFlow_Payments_For_WooCommerce
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

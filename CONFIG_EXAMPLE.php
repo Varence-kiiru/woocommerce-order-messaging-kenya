@@ -5,7 +5,7 @@
  * This file shows how to configure the WooCommerce Order Messaging Kenya plugin.
  * Copy settings from your API providers and add them to WordPress admin.
  *
- * @package Order_Messaging_For_WooCommerce_Kenya
+ * @package PesaFlow_Payments_For_WooCommerce
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

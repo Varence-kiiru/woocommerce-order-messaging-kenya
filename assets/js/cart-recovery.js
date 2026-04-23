@@ -3,7 +3,7 @@
  *
  * Tracks cart activity for abandoned cart recovery campaigns
  *
- * @package Order_Messaging_For_WooCommerce_Kenya
+ * @package PesaFlow_Payments_For_WooCommerce
  */
 
 (function() {

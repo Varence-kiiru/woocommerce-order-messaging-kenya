@@ -3,7 +3,7 @@
  *
  * Handles settings page functionality and provider switching
  *
- * @package Order_Messaging_For_WooCommerce_Kenya
+ * @package PesaFlow_Payments_For_WooCommerce
  */
 
 /**
