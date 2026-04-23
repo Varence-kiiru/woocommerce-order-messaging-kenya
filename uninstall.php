@@ -5,6 +5,10 @@
  * @package Order_Messaging_For_WooCommerce_Kenya
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
