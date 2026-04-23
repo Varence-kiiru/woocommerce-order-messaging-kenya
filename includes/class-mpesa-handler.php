@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * M-Pesa Handler class
  */
-class MPesa_Handler {
+class WWCC_MPesa_Handler {
 
 	/**
 	 * Instance variable
@@ -97,6 +97,8 @@ class MPesa_Handler {
 	 * @return string|WP_Error Access token or error
 	 */
 	public function get_access_token() {
+		$this->load_credentials();
+
 		// Return cached token if still valid
 		if ( $this->access_token ) {
 			return $this->access_token;
@@ -104,7 +106,7 @@ class MPesa_Handler {
 
 		// Check if credentials are set
 		if ( ! $this->consumer_key || ! $this->consumer_secret ) {
-			return new WP_Error( 'missing_credentials', __( 'M-Pesa credentials not configured', 'order-messaging-for-woocommerce-kenya' ) );
+			return new WP_Error( 'missing_credentials', __( 'M-Pesa credentials not configured', 'pesaflow-payments-for-woocommerce' ) );
 		}
 
 		$url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
@@ -131,7 +133,7 @@ class MPesa_Handler {
 			return $body['access_token'];
 		}
 
-		return new WP_Error( 'token_error', __( 'Failed to get M-Pesa access token', 'order-messaging-for-woocommerce-kenya' ) );
+		return new WP_Error( 'token_error', __( 'Failed to get M-Pesa access token', 'pesaflow-payments-for-woocommerce' ) );
 	}
 
 	/**
@@ -143,6 +145,10 @@ class MPesa_Handler {
 	 * @return array|WP_Error Result
 	 */
 	public function initiate_stk_push( $order_id, $phone_number, $amount ) {
+		if ( ! WWCC_Settings::get( 'enable_mpesa_stk', 1 ) ) {
+			return new WP_Error( 'stk_disabled', __( 'M-Pesa STK Push is disabled in plugin settings', 'pesaflow-payments-for-woocommerce' ) );
+		}
+
 		$token = $this->get_access_token();
 
 		if ( is_wp_error( $token ) ) {
@@ -158,7 +164,7 @@ class MPesa_Handler {
 		}
 
 		if ( strlen( $phone ) !== 12 ) {
-			return new WP_Error( 'invalid_phone', __( 'Invalid phone number for STK Push', 'order-messaging-for-woocommerce-kenya' ) );
+			return new WP_Error( 'invalid_phone', __( 'Invalid phone number for STK Push', 'pesaflow-payments-for-woocommerce' ) );
 		}
 
 		$timestamp = gmdate( 'YmdHis' );
@@ -200,9 +206,9 @@ class MPesa_Handler {
 		$status_code = wp_remote_retrieve_response_code( $response );
 		$body        = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		if ( 0 === $body['ResponseCode'] ) {
+		if ( isset( $body['ResponseCode'] ) && '0' === (string) $body['ResponseCode'] ) {
 			// Log the STK push attempt
-			$this->log_transaction( $order_id, $phone, $amount, 'stk_push', 'initiated' );
+			$this->log_transaction( $order_id, $phone, $amount, 'stk_push', 'initiated', $body['CheckoutRequestID'] );
 
 			return [
 				'success'     => true,
@@ -213,7 +219,7 @@ class MPesa_Handler {
 
 		return new WP_Error(
 			'stk_error',
-			$body['ResponseDescription'] ?? __( 'STK Push failed', 'order-messaging-for-woocommerce-kenya' )
+			$body['ResponseDescription'] ?? __( 'STK Push failed', 'pesaflow-payments-for-woocommerce' )
 		);
 	}
 
@@ -226,7 +232,18 @@ class MPesa_Handler {
 	public function handle_mpesa_callback( $request ) {
 		// Get the raw JSON to avoid WordPress processing issues
 		$json = $request->get_body();
+		
+		// Validate JSON format
 		$data = json_decode( $json, true );
+		if ( ! is_array( $data ) || json_last_error() !== JSON_ERROR_NONE ) {
+			return new WP_REST_Response(
+				[ 'ResultCode' => 1, 'ResultDesc' => 'Invalid JSON' ],
+				400
+			);
+		}
+
+		// Sanitize the data array recursively
+		$data = $this->sanitize_webhook_data( $data );
 
 		// Acknowledge receipt immediately to Daraja
 		$response = new WP_REST_Response(
@@ -235,21 +252,56 @@ class MPesa_Handler {
 		);
 
 		// Process asynchronously to prevent timeout
-		wp_schedule_single_event( time(), 'wwcc_process_mpesa_callback', [ $data ] );
+		if ( ! wp_next_scheduled( 'wwcc_process_mpesa_callback', [ $data ] ) ) {
+			wp_schedule_single_event( time(), 'wwcc_process_mpesa_callback', [ $data ] );
+		}
 
 		return $response;
+	}
+
+	/**
+	 * Sanitize webhook data recursively
+	 *
+	 * @param mixed $data Data to sanitize
+	 * @return mixed Sanitized data
+	 */
+	private function sanitize_webhook_data( $data ) {
+		if ( is_array( $data ) ) {
+			$sanitized = [];
+			foreach ( $data as $key => $value ) {
+				// Recursively sanitize values
+				if ( is_array( $value ) || is_object( $value ) ) {
+					$sanitized[ $key ] = $this->sanitize_webhook_data( $value );
+				} elseif ( is_string( $value ) ) {
+					// Sanitize text fields
+					$sanitized[ $key ] = sanitize_text_field( $value );
+				} elseif ( is_numeric( $value ) ) {
+					// Keep numbers as-is
+					$sanitized[ $key ] = $value;
+				} else {
+					$sanitized[ $key ] = $value;
+				}
+			}
+			return $sanitized;
+		} elseif ( is_object( $data ) ) {
+			return $this->sanitize_webhook_data( (array) $data );
+		} elseif ( is_string( $data ) ) {
+			return sanitize_text_field( $data );
+		}
+		return $data;
 	}
 
 	/**
 	 * Process M-Pesa callback data
 	 */
 	public function process_mpesa_callback( $data ) {
-		if ( ! isset( $data['Body']['stkCallback'] ) ) {
+		if ( ! isset( $data['Body']['stkCallback'] ) || ! is_array( $data['Body']['stkCallback'] ) ) {
 			return;
 		}
 
 		$callback = $data['Body']['stkCallback'];
-		$order_id = $this->extract_order_id_from_reference( $callback['CheckoutRequestID'] );
+		$checkout_request_id = isset( $callback['CheckoutRequestID'] ) ? sanitize_text_field( $callback['CheckoutRequestID'] ) : '';
+		$order_id            = $this->extract_order_id_from_reference( $checkout_request_id );
 
 		if ( ! $order_id ) {
 			return;
@@ -261,33 +313,33 @@ class MPesa_Handler {
 		}
 
 		// Check if payment was successful
-		if ( 0 === $callback['ResultCode'] ) {
+		if ( isset( $callback['ResultCode'] ) && '0' === (string) $callback['ResultCode'] ) {
 			// Payment successful
 			$phone = $order->get_billing_phone();
 
 			// Mark order as paid
 			$order->payment_complete();
-			$order->update_status( 'processing', __( 'M-Pesa payment confirmed', 'order-messaging-for-woocommerce-kenya' ) );
+			$order->update_status( 'processing', __( 'M-Pesa payment confirmed', 'pesaflow-payments-for-woocommerce' ) );
 
 			// Log transaction
 			$this->log_transaction( $order_id, $phone, $order->get_total(), 'stk_push', 'completed' );
 
 			// Send confirmation via WhatsApp
-			WhatsApp_API::get_instance()->on_payment_complete( $order_id );
+			WWCC_WhatsApp_API::get_instance()->on_payment_complete( $order_id );
 		} else {
 			// Payment failed
 			$phone = $order->get_billing_phone();
-			$order->update_status( 'failed', __( 'M-Pesa payment was cancelled', 'order-messaging-for-woocommerce-kenya' ) );
+			$order->update_status( 'failed', __( 'M-Pesa payment was cancelled', 'pesaflow-payments-for-woocommerce' ) );
 
 			// Log transaction
 			$this->log_transaction( $order_id, $phone, $order->get_total(), 'stk_push', 'failed' );
 
 			// Send failure message via WhatsApp
-			WhatsApp_API::get_instance()->send_message(
+			WWCC_WhatsApp_API::get_instance()->send_message(
 				$phone,
 				sprintf(
 					/* translators: %d: Order ID. */
-					__( '❌ Payment failed for order #%d. Please try again or contact us.', 'order-messaging-for-woocommerce-kenya' ),
+					__( '❌ Payment failed for order #%d. Please try again or contact us.', 'pesaflow-payments-for-woocommerce' ),
 					$order_id
 				)
 			);
@@ -301,15 +353,12 @@ class MPesa_Handler {
 	 * @return int|false Order ID or false
 	 */
 	private function extract_order_id_from_reference( $reference ) {
-		// Try to find order by meta key
 		global $wpdb;
 
-		// Look up in postmeta for the CheckoutRequestID
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Reads a known WooCommerce meta entry to resolve the related order.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Reads a known entry from the plugin's custom M-Pesa log table.
 		$order_id = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = %s AND meta_value = %s",
-				'_wwcc_checkout_request_id',
+				"SELECT order_id FROM {$wpdb->prefix}wwcc_mpesa_logs WHERE transaction_id = %s ORDER BY id DESC LIMIT 1",
 				$reference
 			)
 		);
@@ -320,7 +369,7 @@ class MPesa_Handler {
 	/**
 	 * Log M-Pesa transaction
 	 */
-	private function log_transaction( $order_id, $phone, $amount, $transaction_type, $status ) {
+	private function log_transaction( $order_id, $phone, $amount, $transaction_type, $status, $transaction_id = '' ) {
 		global $wpdb;
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Inserts into the plugin's custom M-Pesa log table.
@@ -331,10 +380,11 @@ class MPesa_Handler {
 				'phone_number'     => $phone,
 				'amount'           => $amount,
 				'transaction_type' => $transaction_type,
+				'transaction_id'   => $transaction_id,
 				'status'           => $status,
 				'logged_at'        => current_time( 'mysql' ),
 			],
-			[ '%d', '%s', '%f', '%s', '%s', '%s' ]
+			[ '%d', '%s', '%f', '%s', '%s', '%s', '%s' ]
 		);
 	}
 
@@ -347,7 +397,7 @@ class MPesa_Handler {
 		$order = wc_get_order( $order_id );
 
 		if ( ! $order ) {
-			return false;
+			return new WP_Error( 'invalid_order', __( 'Invalid order', 'pesaflow-payments-for-woocommerce' ) );
 		}
 
 		$phone_number = $order->get_billing_phone();
@@ -364,11 +414,11 @@ class MPesa_Handler {
 		$order->save();
 
 		// Send WhatsApp notification about payment
-		WhatsApp_API::get_instance()->send_message(
+		WWCC_WhatsApp_API::get_instance()->send_message(
 			$phone_number,
 			sprintf(
 				/* translators: 1: Order ID, 2: Payment amount in KES */
-				__( '💰 Please complete payment for order #%1$d\nAmount: KES %2$s\nA prompt will appear on your phone shortly', 'order-messaging-for-woocommerce-kenya' ),
+				__( '💰 Please complete payment for order #%1$d\nAmount: KES %2$s\nA prompt will appear on your phone shortly', 'pesaflow-payments-for-woocommerce' ),
 				$order_id,
 				$amount
 			)

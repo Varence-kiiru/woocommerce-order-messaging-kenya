@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: Order Messaging for WooCommerce Kenya
- * Plugin URI: https://github.com/Varence-kiiru/order-messaging-for-woocommerce-kenya
- * Description: Complete order messaging and M-Pesa payment automation for WooCommerce in Kenya (via Twilio, with order notifications, and cart recovery)
+ * Plugin Name: PesaFlow Payments for WooCommerce
+ * Plugin URI: https://github.com/Varence-kiiru/woocommerce-order-messaging-kenya
+ * Description: M-Pesa payment integration, WhatsApp messaging, and order automation for WooCommerce. Streamline payments and customer communication.
  * Version: 1.0.0
  * Author: Varence Kiiru
  * Author URI: https://github.com/Varence-kiiru
  * License: GPL2
- * Text Domain: order-messaging-for-woocommerce-kenya
+ * Text Domain: pesaflow-payments-for-woocommerce
  * Domain Path: /languages
  * Requires at least: 5.0
  * Requires PHP: 7.4
@@ -41,7 +41,7 @@ function wwcc_get_plugin() {
 	static $plugin;
 
 	if ( ! isset( $plugin ) ) {
-		$plugin = new WhatsApp_WooCommerce();
+		$plugin = new WWCC_Plugin();
 	}
 
 	return $plugin;
@@ -59,8 +59,8 @@ add_action( 'init', 'wwcc_init_plugin', 0 );
  * Plugin activation hook
  */
 function wwcc_activate_plugin() {
-	if ( class_exists( 'WhatsApp_WooCommerce' ) ) {
-		WhatsApp_WooCommerce::activate();
+	if ( class_exists( 'WWCC_Plugin' ) ) {
+		WWCC_Plugin::activate();
 	}
 }
 register_activation_hook( __FILE__, 'wwcc_activate_plugin' );
@@ -69,8 +69,8 @@ register_activation_hook( __FILE__, 'wwcc_activate_plugin' );
  * Plugin deactivation hook
  */
 function wwcc_deactivate_plugin() {
-	if ( class_exists( 'WhatsApp_WooCommerce' ) ) {
-		WhatsApp_WooCommerce::deactivate();
+	if ( class_exists( 'WWCC_Plugin' ) ) {
+		WWCC_Plugin::deactivate();
 	}
 }
 register_deactivation_hook( __FILE__, 'wwcc_deactivate_plugin' );

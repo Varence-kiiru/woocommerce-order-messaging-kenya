@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Database class
  */
-class DB_WhatsApp_WooCommerce {
+class WWCC_DB {
 
 	/**
 	 * Create plugin database tables

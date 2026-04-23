@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Order Sync class
  */
-class Order_Sync {
+class WWCC_Order_Sync {
 
 	/**
 	 * Instance variable
@@ -101,13 +101,65 @@ class Order_Sync {
 	 * @return WP_REST_Response Response
 	 */
 	public function receive_incoming_message( $request ) {
+		if ( ! WWCC_Settings::get( 'enable_order_creation', 1 ) ) {
+			return new WP_REST_Response( [ 'error' => 'Order creation is disabled' ], 403 );
+		}
+
 		$json = $request->get_body();
+		
+		// Validate JSON format
 		$data = json_decode( $json, true );
+		if ( ! is_array( $data ) || json_last_error() !== JSON_ERROR_NONE ) {
+			return new WP_REST_Response( [ 'error' => 'Invalid JSON' ], 400 );
+		}
+
+		// Verify webhook token for Meta provider
+		$provider = WWCC_Settings::get( 'whatsapp_provider', 'twilio' );
+		if ( 'meta' === $provider ) {
+			$verify_token = WWCC_Settings::get( 'webhook_verify_token', '' );
+			if ( empty( $verify_token ) ) {
+				return new WP_REST_Response( [ 'error' => 'Webhook token not configured' ], 500 );
+			}
+		}
+
+		// Sanitize the data array recursively
+		$data = $this->sanitize_webhook_data( $data );
 
 		// Process asynchronously
-		wp_schedule_single_event( time(), 'wwcc_process_incoming_message', [ $data ] );
+		if ( ! wp_next_scheduled( 'wwcc_process_incoming_message', [ $data ] ) ) {
+			wp_schedule_single_event( time(), 'wwcc_process_incoming_message', [ $data ] );
+		}
 
 		return new WP_REST_Response( [ 'success' => true ], 200 );
+	}
+
+	/**
+	 * Sanitize webhook data recursively
+	 *
+	 * @param mixed $data Data to sanitize
+	 * @return mixed Sanitized data
+	 */
+	private function sanitize_webhook_data( $data ) {
+		if ( is_array( $data ) ) {
+			$sanitized = [];
+			foreach ( $data as $key => $value ) {
+				// Recursively sanitize values
+				if ( is_array( $value ) || is_object( $value ) ) {
+					$sanitized[ $key ] = $this->sanitize_webhook_data( $value );
+				} elseif ( is_string( $value ) ) {
+					// Sanitize text fields
+					$sanitized[ $key ] = sanitize_text_field( $value );
+				} else {
+					$sanitized[ $key ] = $value;
+				}
+			}
+			return $sanitized;
+		} elseif ( is_object( $data ) ) {
+			return $this->sanitize_webhook_data( (array) $data );
+		} elseif ( is_string( $data ) ) {
+			return sanitize_text_field( $data );
+		}
+		return $data;
 	}
 
 	/**
@@ -116,6 +168,10 @@ class Order_Sync {
 	 * @param array $data Message data from WhatsApp provider
 	 */
 	public function handle_incoming_message( $data = null ) {
+		if ( ! WWCC_Settings::get( 'enable_order_creation', 1 ) ) {
+			return;
+		}
+
 		// Get from $_REQUEST if no parameter passed
 		if ( null === $data ) {
 			// Get the raw body
@@ -150,9 +206,9 @@ class Order_Sync {
 		$items = $this->extract_order_items( $message_data );
 		if ( empty( $items ) ) {
 			// Send message asking for order details
-			WhatsApp_API::get_instance()->send_message(
+			WWCC_WhatsApp_API::get_instance()->send_message(
 				$customer_data['phone'],
-				__( 'Hi! Please share the product name and quantity you want to order. Example: Nike Shoes, 2', 'order-messaging-for-woocommerce-kenya' )
+				__( 'Hi! Please share the product name and quantity you want to order. Example: Nike Shoes, 2', 'pesaflow-payments-for-woocommerce' )
 			);
 			return;
 		}
@@ -161,10 +217,10 @@ class Order_Sync {
 		$order = $this->create_order_from_message( $customer_data, $items );
 
 		if ( is_wp_error( $order ) ) {
-			WhatsApp_API::get_instance()->send_message(
+			WWCC_WhatsApp_API::get_instance()->send_message(
 				$customer_data['phone'],
 				/* translators: Error message from order creation */
-				__( '❌ Sorry, we couldn\'t create your order. Please try again or contact support.', 'order-messaging-for-woocommerce-kenya' )
+				__( '❌ Sorry, we couldn\'t create your order. Please try again or contact support.', 'pesaflow-payments-for-woocommerce' )
 			);
 			return;
 		}
@@ -172,12 +228,12 @@ class Order_Sync {
 		// Send confirmation
 		$message = sprintf(
 			/* translators: 1: Order ID, 2: Order total in KES */
-			__( '✅ Great! Your order #%1$d has been created.\n\nTotal: KES %2$s\n\nReply to confirm or adjust', 'order-messaging-for-woocommerce-kenya' ),
+			__( '✅ Great! Your order #%1$d has been created.\n\nTotal: KES %2$s\n\nReply to confirm or adjust', 'pesaflow-payments-for-woocommerce' ),
 			$order->get_id(),
 			$order->get_formatted_order_total()
 		);
 
-		WhatsApp_API::get_instance()->send_message( $customer_data['phone'], $message );
+		WWCC_WhatsApp_API::get_instance()->send_message( $customer_data['phone'], $message );
 
 		// Log conversation
 		$this->log_conversation( $customer_data['phone'], $message_data['text'], $order->get_id(), 'order_created' );
@@ -218,20 +274,29 @@ class Order_Sync {
 	 * Extract message data from Twilio API
 	 */
 	private function extract_twilio_message_data( $data ) {
-		if ( ! isset( $data['Messages'] ) || empty( $data['Messages'] ) ) {
+		if ( isset( $data['Messages'] ) && ! empty( $data['Messages'] ) ) {
+			$message = $data['Messages'][0];
+
+			// Extract phone from Twilio format (whatsapp:+2547XXXXXXX)
+			$phone = str_replace( 'whatsapp:', '', $message['From'] ?? '' );
+
+			return [
+				'phone'      => $phone,
+				'text'       => $message['Body'] ?? '',
+				'message_id' => $message['MessageSid'] ?? '',
+				'timestamp'  => $message['DateSent'] ?? time(),
+			];
+		}
+
+		if ( empty( $data['From'] ) ) {
 			return false;
 		}
 
-		$message = $data['Messages'][0];
-
-		// Extract phone from Twilio format (whatsapp:+2547XXXXXXX)
-		$phone = str_replace( 'whatsapp:', '', $message['From'] );
-
 		return [
-			'phone'      => $phone,
-			'text'       => $message['Body'] ?? '',
-			'message_id' => $message['MessageSid'],
-			'timestamp'  => $message['DateSent'] ?? time(),
+			'phone'      => str_replace( 'whatsapp:', '', $data['From'] ),
+			'text'       => $data['Body'] ?? '',
+			'message_id' => $data['MessageSid'] ?? '',
+			'timestamp'  => $data['DateSent'] ?? time(),
 		];
 	}
 
@@ -246,9 +311,24 @@ class Order_Sync {
 		$phone = $message_data['phone'];
 
 		// Look for existing customer by phone
-		$customer = get_user_by( 'meta', '_billing_phone', $phone );
+		$orders = wc_get_orders(
+			[
+				'limit'         => 1,
+				'orderby'       => 'date',
+				'order'         => 'DESC',
+				'billing_phone' => $phone,
+				'return'        => 'objects',
+			]
+		);
+		$order  = ! empty( $orders ) ? $orders[0] : false;
 
-		if ( $customer ) {
+		if ( $order instanceof WC_Order && $order->get_user_id() ) {
+			$customer = get_user_by( 'id', $order->get_user_id() );
+		} else {
+			$customer = false;
+		}
+
+		if ( $customer instanceof WP_User ) {
 			return [
 				'user_id'  => $customer->ID,
 				'name'     => $customer->first_name . ' ' . $customer->last_name,
@@ -363,9 +443,10 @@ class Order_Sync {
 
 		// Query products
 		$args = [
-			'post_type'  => 'product',
+			'post_type'   => 'product',
+			'post_status' => 'publish',
 			'numberposts' => 5,
-			's'          => $name,
+			's'           => $name,
 		];
 
 		$products = get_posts( $args );

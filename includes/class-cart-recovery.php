@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Cart Recovery class
  */
-class Cart_Recovery {
+class WWCC_Cart_Recovery {
 
 	/**
 	 * Instance variable
@@ -42,11 +42,15 @@ class Cart_Recovery {
 	 * Register hooks
 	 */
 	private function register_hooks() {
-		// Track abandoned carts
-		add_action( 'wp_footer', [ $this, 'track_cart_activity' ] );
+		// Enqueue cart tracking script on frontend
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_cart_tracking_script' ] );
 
 		// Cron for sending reminders
 		add_action( 'wwcc_cart_recovery_cron', [ $this, 'send_recovery_messages' ] );
+		add_action( 'woocommerce_checkout_order_processed', [ $this, 'maybe_track_pending_order' ], 10, 1 );
+		add_action( 'woocommerce_payment_complete', [ $this, 'clear_recovery_for_order' ], 10, 1 );
+		add_action( 'woocommerce_order_status_completed', [ $this, 'clear_recovery_for_order' ], 10, 1 );
+		add_action( 'woocommerce_order_status_processing', [ $this, 'clear_recovery_for_order' ], 10, 1 );
 
 		// Schedule cron on init
 		if ( ! wp_next_scheduled( 'wwcc_cart_recovery_cron' ) ) {
@@ -55,38 +59,65 @@ class Cart_Recovery {
 	}
 
 	/**
+	 * Mark newly created unpaid orders for recovery follow-up.
+	 *
+	 * @param int $order_id WooCommerce order ID.
+	 */
+	public function maybe_track_pending_order( $order_id ) {
+		if ( ! WWCC_Settings::get( 'enable_cart_recovery', 1 ) ) {
+			return;
+		}
+
+		self::mark_cart_abandoned( $order_id );
+	}
+
+	/**
+	 * Clear recovery queue once an order is paid or completed.
+	 *
+	 * @param int $order_id WooCommerce order ID.
+	 */
+	public function clear_recovery_for_order( $order_id ) {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Updates the plugin's custom cart recovery table for a completed order.
+		$wpdb->update(
+			$wpdb->prefix . 'wwcc_carts',
+			[
+				'abandoned'     => 0,
+				'recovery_sent' => 1,
+			],
+			[ 'order_id' => $order_id ],
+			[ '%d', '%d' ],
+			[ '%d' ]
+		);
+	}
+
+	/**
+	 * Enqueue cart tracking script
+	 */
+	public function enqueue_cart_tracking_script() {
+		// Only load on shop and product pages
+		if ( ! ( is_shop() || is_product() || is_product_category() ) ) {
+			return;
+		}
+
+		wp_enqueue_script(
+			'wwcc-cart-recovery',
+			WWCC_PLUGIN_URL . 'assets/js/cart-recovery.js',
+			[ 'jquery' ],
+			WWCC_PLUGIN_VERSION,
+			true
+		);
+	}
+
+	/**
 	 * Track cart activity on frontend
+	 *
+	 * @deprecated Use enqueue_cart_tracking_script instead
 	 */
 	public function track_cart_activity() {
-		if ( is_admin() || ! is_shop() && ! is_product_category() && ! is_product() ) {
-			return;
-		}
-
-		// Only on product pages and shop
-		if ( ! is_product() && ! is_shop() && ! is_product_category() ) {
-			return;
-		}
-
-		?>
-		<script>
-		(function() {
-			if (typeof jQuery === 'undefined') return;
-			
-			var $ = jQuery;
-			var cacheKey = 'wwcc_cart_tracked';
-			var cartCount = $('span.cart-contents-count').text() || 0;
-			
-			if (cartCount > 0) {
-				// Cart has items
-				localStorage.setItem(cacheKey, JSON.stringify({
-					cartCount: cartCount,
-					timestamp: Date.now(),
-					url: window.location.href
-				}));
-			}
-		})();
-		</script>
-		<?php
+		// This method is kept for backward compatibility but is no longer used
+		return;
 	}
 
 	/**
@@ -133,13 +164,13 @@ class Cart_Recovery {
 
 		$message = sprintf(
 			/* translators: 1: Customer first name, 2: Order total, 3: Checkout payment URL */
-			__( '👀 Hi %1$s!\n\nYou left items in your cart worth KES %2$s\n\n👉 Complete your order here: %3$s\n\nOffer expires soon! 🎁', 'order-messaging-for-woocommerce-kenya' ),
+			__( '👀 Hi %1$s!\n\nYou left items in your cart worth KES %2$s\n\n👉 Complete your order here: %3$s\n\nOffer expires soon! 🎁', 'pesaflow-payments-for-woocommerce' ),
 			$order->get_billing_first_name(),
 			$order->get_formatted_order_total(),
 			$order->get_checkout_payment_url()
 		);
 
-		$result = WhatsApp_API::get_instance()->send_message( $phone, $message );
+		$result = WWCC_WhatsApp_API::get_instance()->send_message( $phone, $message );
 
 		if ( ! is_wp_error( $result ) ) {
 			// Mark as sent

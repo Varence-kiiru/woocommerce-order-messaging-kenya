@@ -32,19 +32,19 @@ $wwcc_pages = ceil( $wwcc_total / $wwcc_limit );
 ?>
 
 <div class="wrap">
-	<h1><?php esc_html_e( 'WhatsApp Message Logs', 'order-messaging-for-woocommerce-kenya' ); ?></h1>
+	<h1><?php esc_html_e( 'WhatsApp Message Logs', 'pesaflow-payments-for-woocommerce' ); ?></h1>
 
 	<?php if ( empty( $wwcc_logs ) ) : ?>
-		<p><?php esc_html_e( 'No messages sent yet.', 'order-messaging-for-woocommerce-kenya' ); ?></p>
+		<p><?php esc_html_e( 'No messages sent yet.', 'pesaflow-payments-for-woocommerce' ); ?></p>
 	<?php else : ?>
 		<table class="wp-list-table widefat striped">
 			<thead>
 				<tr>
-					<th><?php esc_html_e( 'Time', 'order-messaging-for-woocommerce-kenya' ); ?></th>
-					<th><?php esc_html_e( 'Order', 'order-messaging-for-woocommerce-kenya' ); ?></th>
-					<th><?php esc_html_e( 'Phone', 'order-messaging-for-woocommerce-kenya' ); ?></th>
-					<th><?php esc_html_e( 'Type', 'order-messaging-for-woocommerce-kenya' ); ?></th>
-					<th><?php esc_html_e( 'Message', 'order-messaging-for-woocommerce-kenya' ); ?></th>
+					<th><?php esc_html_e( 'Time', 'pesaflow-payments-for-woocommerce' ); ?></th>
+					<th><?php esc_html_e( 'Order', 'pesaflow-payments-for-woocommerce' ); ?></th>
+					<th><?php esc_html_e( 'Phone', 'pesaflow-payments-for-woocommerce' ); ?></th>
+					<th><?php esc_html_e( 'Type', 'pesaflow-payments-for-woocommerce' ); ?></th>
+					<th><?php esc_html_e( 'Message', 'pesaflow-payments-for-woocommerce' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -76,8 +76,8 @@ $wwcc_pages = ceil( $wwcc_total / $wwcc_limit );
 				<?php echo wp_kses_post( paginate_links( [
 					'base'      => admin_url( 'admin.php?page=wwcc-logs&paged=%#%' ),
 					'format'    => '%#%',
-					'prev_text' => __( '&laquo; Previous', 'order-messaging-for-woocommerce-kenya' ),
-					'next_text' => __( 'Next &raquo;', 'order-messaging-for-woocommerce-kenya' ),
+					'prev_text' => __( '&laquo; Previous', 'pesaflow-payments-for-woocommerce' ),
+					'next_text' => __( 'Next &raquo;', 'pesaflow-payments-for-woocommerce' ),
 					'total'     => $wwcc_pages,
 					'current'   => $wwcc_page,
 				] ) ); ?>

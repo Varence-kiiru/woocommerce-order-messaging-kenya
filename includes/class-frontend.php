@@ -79,7 +79,7 @@ function wwcc_add_product_whatsapp_button() {
 	// Build message
 	$message = sprintf(
 		/* translators: 1: Product name, 2: Product price in KES */
-		__( 'Hi, I want to order:\nProduct: %1$s\nPrice: KES %2$s', 'order-messaging-for-woocommerce-kenya' ),
+		__( 'Hi, I want to order:\nProduct: %1$s\nPrice: KES %2$s', 'pesaflow-payments-for-woocommerce' ),
 		$product->get_name(),
 		$product->get_price()
 	);
@@ -91,13 +91,14 @@ function wwcc_add_product_whatsapp_button() {
 
 	$icon_url = WWCC_PLUGIN_URL . 'assets/images/whatsapp_icon.jpg';
 	echo sprintf(
-		'<a href="%s" class="wp-element-button wwcc-whatsapp-button" target="_blank" rel="noopener noreferrer">
+		'<a href="%s" class="wp-element-button wwcc-whatsapp-button" data-product-id="%d" target="_blank" rel="noopener noreferrer">
 			<img src="%s" alt="WhatsApp" class="wwcc-whatsapp-button-icon">
 			%s
 		</a>',
 		esc_url( $whatsapp_url ),
+		esc_attr( $product_id ),
 		esc_url( $icon_url ),
-		esc_html__( 'Order via WhatsApp', 'order-messaging-for-woocommerce-kenya' )
+		esc_html__( 'Order via WhatsApp', 'pesaflow-payments-for-woocommerce' )
 	);
 }
 
@@ -127,7 +128,7 @@ function wwcc_add_shop_loop_whatsapp_button() {
 	// Build message
 	$message = sprintf(
 		/* translators: 1: Product name, 2: Product price in KES */
-		__( 'Hi, I want to order:\nProduct: %1$s\nPrice: KES %2$s', 'order-messaging-for-woocommerce-kenya' ),
+		__( 'Hi, I want to order:\nProduct: %1$s\nPrice: KES %2$s', 'pesaflow-payments-for-woocommerce' ),
 		$product->get_name(),
 		$product->get_price()
 	);
@@ -139,13 +140,14 @@ function wwcc_add_shop_loop_whatsapp_button() {
 
 	$icon_url = WWCC_PLUGIN_URL . 'assets/images/whatsapp_icon.jpg';
 	echo sprintf(
-		'<a href="%s" class="wp-element-button wwcc-whatsapp-button wwcc-whatsapp-button--small" target="_blank" rel="noopener noreferrer">
+		'<a href="%s" class="wp-element-button wwcc-whatsapp-button wwcc-whatsapp-button--small" data-product-id="%d" target="_blank" rel="noopener noreferrer">
 			<img src="%s" alt="WhatsApp" class="wwcc-whatsapp-button-icon">
 			%s
 		</a>',
 		esc_url( $whatsapp_url ),
+		esc_attr( $product->get_id() ),
 		esc_url( $icon_url ),
-		esc_html__( 'Order via WhatsApp', 'order-messaging-for-woocommerce-kenya' )
+		esc_html__( 'Order via WhatsApp', 'pesaflow-payments-for-woocommerce' )
 	);
 }
 

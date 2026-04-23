@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Webhook Handler class
  */
-class Webhook_Handler {
+class WWCC_Webhook_Handler {
 
 	/**
 	 * Instance variable
@@ -46,10 +46,10 @@ class Webhook_Handler {
 		add_action( 'rest_api_init', [ $this, 'register_routes' ] );
 
 		// Hook to process M-Pesa callbacks
-		add_action( 'wwcc_process_mpesa_callback', [ MPesa_Handler::class, 'process_mpesa_callback' ] );
+		add_action( 'wwcc_process_mpesa_callback', [ WWCC_MPesa_Handler::get_instance(), 'process_mpesa_callback' ] );
 
 		// Hook to process incoming messages
-		add_action( 'wwcc_process_incoming_message', [ Order_Sync::class, 'handle_incoming_message' ] );
+		add_action( 'wwcc_process_incoming_message', [ WWCC_Order_Sync::get_instance(), 'handle_incoming_message' ] );
 	}
 
 	/**

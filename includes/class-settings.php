@@ -29,7 +29,7 @@ class WWCC_Settings {
 	 * @return mixed Setting value
 	 */
 	public static function get( $key, $default = '' ) {
-		$settings = get_option( self::OPTION_KEY, [] );
+		$settings = self::get_all();
 
 		return isset( $settings[ $key ] ) ? $settings[ $key ] : $default;
 	}
@@ -42,7 +42,7 @@ class WWCC_Settings {
 	 * @return bool True if updated/saved
 	 */
 	public static function update( $key, $value ) {
-		$settings         = get_option( self::OPTION_KEY, [] );
+		$settings         = self::get_all();
 		$settings[ $key ] = $value;
 
 		return update_option( self::OPTION_KEY, $settings );
@@ -54,7 +54,13 @@ class WWCC_Settings {
 	 * @return array All settings
 	 */
 	public static function get_all() {
-		return get_option( self::OPTION_KEY, [] );
+		$saved_settings = get_option( self::OPTION_KEY, [] );
+
+		if ( ! is_array( $saved_settings ) ) {
+			$saved_settings = [];
+		}
+
+		return wp_parse_args( $saved_settings, self::get_defaults() );
 	}
 
 	/**
@@ -64,7 +70,7 @@ class WWCC_Settings {
 	 * @return bool True if updated
 	 */
 	public static function update_multiple( $values ) {
-		$settings = get_option( self::OPTION_KEY, [] );
+		$settings = self::get_all();
 
 		foreach ( $values as $key => $value ) {
 			$settings[ $key ] = $value;

@@ -1,6 +1,6 @@
-=== Order Messaging for WooCommerce Kenya ===
-Contributors: Varence Kiiru
-Tags: order-messaging, e-commerce, messaging, mpesa, kenya
+=== PesaFlow Payments for WooCommerce ===
+Contributors: Varence Kiiru, ngangakiiru
+Tags: mpesa, payments, woocommerce, messaging, twilio
 Requires at least: 5.0
 Requires PHP: 7.4
 Tested up to: 6.9
@@ -8,11 +8,11 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Complete order messaging and M-Pesa payment automation for WooCommerce in Kenya (via Twilio, with order notifications, and cart recovery).
+M-Pesa payment integration, WhatsApp messaging, and order automation for WooCommerce. Streamline payments and customer communication.
 
 == Description ==
 
-Order Messaging for WooCommerce Kenya is a comprehensive plugin that seamlessly integrates order messaging (via Twilio) and M-Pesa payment processing with your WooCommerce store.
+PesaFlow Payments for WooCommerce is a comprehensive plugin that seamlessly integrates M-Pesa payment processing and WhatsApp messaging with your WooCommerce store.
 
 **Key Features:**
 
@@ -35,13 +35,93 @@ Order Messaging for WooCommerce Kenya is a comprehensive plugin that seamlessly 
 
 This plugin integrates with:
 * **Twilio**: For WhatsApp messaging (https://www.twilio.com/)
+* **Meta**: For WhatsApp Business API messaging (https://www.meta.com/)
 * **M-Pesa Daraja API**: For payment processing (https://developer.safaricom.co.ke/)
+
+== External Services ==
+
+This plugin connects to external third-party services to provide messaging and payment functionality. Please review the following information about each service:
+
+=== Twilio (WhatsApp Messaging) ===
+
+**Purpose:** Sends and receives WhatsApp messages, enabling order notifications and customer communication.
+
+**What Data is Sent:**
+- Customer phone numbers (in E.164 format, e.g., +254XXXXXXXXX)
+- Order information (order number, total, items)
+- Business messages and notifications
+- Customer incoming messages
+
+**When Data is Sent:**
+- When an order is placed (if order notifications are enabled)
+- When customers message the business via WhatsApp
+- When cart recovery messages are triggered
+- When manual messages are sent from admin panel
+
+**Service Details:**
+- Service Provider: Twilio Inc.
+- Terms of Service: https://www.twilio.com/legal/terms
+- Privacy Policy: https://www.twilio.com/legal/privacy
+
+=== Meta (WhatsApp Business API) ===
+
+**Purpose:** Alternative WhatsApp messaging provider for sending and receiving WhatsApp messages (optional - requires explicit selection in settings).
+
+**What Data is Sent:**
+- Customer phone numbers (in E.164 format)
+- Order information (order number, total, items)
+- Business messages and notifications
+- Customer incoming messages
+
+**When Data is Sent:**
+- When an order is placed (if order notifications enabled)
+- When customers message the business via WhatsApp
+- When cart recovery messages are triggered
+- When manual messages are sent from admin panel
+
+**Service Details:**
+- Service Provider: Meta Platforms, Inc.
+- Terms of Service: https://www.facebook.com/legal/terms
+- Privacy Policy: https://www.facebook.com/privacy/explanation
+
+=== Safaricom Daraja M-Pesa API ===
+
+**Purpose:** Processes M-Pesa payment requests and receives payment confirmation callbacks. Enables STK push (payment prompt) functionality for customers.
+
+**What Data is Sent:**
+- Customer phone numbers (in E.164 format for Kenya: +254XXXXXXXXX)
+- Payment amounts (in KES - Kenyan Shillings)
+- Order reference numbers
+- Till/Business Short Code
+- Timestamps and transaction IDs
+- Callback confirmations
+
+**When Data is Sent:**
+- When an M-Pesa payment prompt is initiated for an order
+- When payment confirmation callbacks are received
+- When payment status is queried
+
+**Service Details:**
+- Service Provider: Safaricom PLC
+- Developer Portal: https://developer.safaricom.co.ke/
+- Terms of Service: https://developer.safaricom.co.ke/start
+- Privacy Policy: https://www.safaricom.co.ke/about/our-company/legal-and-compliance
+- API Documentation: https://developer.safaricom.co.ke/APIs
+
+=== Webhook Configuration ===
+
+This plugin uses webhooks to receive incoming messages and payment confirmations. The webhook endpoints are:
+
+- **Incoming Messages:** `https://yourdomain.com/wp-json/wwcc/v1/incoming-messages` (POST)
+- **M-Pesa Callback:** `https://yourdomain.com/wp-json/wwcc/v1/mpesa-callback` (POST)
+
+These endpoints must be configured in your Twilio, Meta, and Safaricom accounts respectively to receive real-time updates.
 
 == Installation ==
 
 1. Upload the plugin folder to `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Navigate to WhatsApp WooCommerce settings
+3. Navigate to PesaFlow Payments settings
 4. Enter your Twilio API credentials and M-Pesa Daraja API keys
 5. Configure your business phone number and M-Pesa settings
 6. Enable desired features (Order Creation, Cart Recovery, etc.)
@@ -83,7 +163,7 @@ Yes. The plugin integrates seamlessly with all WooCommerce themes, including the
 == Support ==
 
 For issues, questions, or feature requests, please visit:
-https://github.com/Varence-kiiru/whatsapp-woocommerce-kenya
+https://github.com/Varence-kiiru/woocommerce-order-messaging-kenya
 
 == License ==
 

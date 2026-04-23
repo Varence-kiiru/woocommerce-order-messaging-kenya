@@ -1,8 +1,8 @@
-# WhatsApp WooCommerce Kenya Plugin
+# Order Messaging Kenya Plugin
 
-🚀 **Complete WhatsApp + WooCommerce automation plugin specifically built for Kenya**
+🚀 **Complete order messaging and M-Pesa automation plugin specifically built for Kenya**
 
-This plugin integrates WhatsApp messaging, M-Pesa payments, and WooCommerce to create a seamless commerce experience.
+This plugin integrates WhatsApp messaging, M-Pesa payments, and store order workflows to create a seamless commerce experience.
 
 ## Features
 

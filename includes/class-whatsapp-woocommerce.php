@@ -12,12 +12,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Main plugin class
  */
-class WhatsApp_WooCommerce {
+class WWCC_Plugin {
 
 	/**
 	 * Instance variable
 	 *
-	 * @var WhatsApp_WooCommerce
+	 * @var WWCC_Plugin
 	 */
 	private static $instance = null;
 
@@ -65,6 +65,8 @@ class WhatsApp_WooCommerce {
 		// Load dependencies first
 		$this->load_dependencies();
 
+		$this->maybe_upgrade();
+
 		// Check WooCommerce dependency
 		if ( ! $this->is_woocommerce_active() ) {
 			add_action( 'admin_notices', [ $this, 'woocommerce_missing_notice' ] );
@@ -72,15 +74,15 @@ class WhatsApp_WooCommerce {
 		}
 
 		// Initialize core components
-		WhatsApp_API::get_instance();
-		MPesa_Handler::get_instance();
-		Order_Sync::get_instance();
-		Cart_Recovery::get_instance();
-		Webhook_Handler::get_instance();
+		WWCC_WhatsApp_API::get_instance();
+		WWCC_MPesa_Handler::get_instance();
+		WWCC_Order_Sync::get_instance();
+		WWCC_Cart_Recovery::get_instance();
+		WWCC_Webhook_Handler::get_instance();
 
 		// Initialize admin (if admin)
 		if ( is_admin() ) {
-			Admin_WhatsApp_WooCommerce::get_instance();
+			WWCC_Admin::get_instance();
 		}
 
 		// Add settings link in plugins list
@@ -98,12 +100,24 @@ class WhatsApp_WooCommerce {
 	}
 
 	/**
+	 * Ensure schema and defaults stay in sync across updates.
+	 */
+	private function maybe_upgrade() {
+		$stored_version = get_option( 'wwcc_plugin_version', '' );
+
+		if ( WWCC_PLUGIN_VERSION !== $stored_version ) {
+			WWCC_DB::create_tables();
+			update_option( 'wwcc_plugin_version', WWCC_PLUGIN_VERSION );
+		}
+	}
+
+	/**
 	 * WooCommerce missing notice
 	 */
 	public function woocommerce_missing_notice() {
 		echo '<div class="notice notice-error"><p>';
 		echo wp_kses_post(
-			__( 'WhatsApp WooCommerce requires WooCommerce to be installed and active.', 'order-messaging-for-woocommerce-kenya' )
+			__( 'WhatsApp WooCommerce requires WooCommerce to be installed and active.', 'pesaflow-payments-for-woocommerce' )
 		);
 		echo '</p></div>';
 	}
@@ -115,7 +129,7 @@ class WhatsApp_WooCommerce {
 		$settings_link = sprintf(
 			'<a href="%s">%s</a>',
 			admin_url( 'admin.php?page=wwcc-settings' ),
-			__( 'Settings', 'order-messaging-for-woocommerce-kenya' )
+			__( 'Settings', 'pesaflow-payments-for-woocommerce' )
 		);
 		array_unshift( $links, $settings_link );
 		return $links;
@@ -138,23 +152,23 @@ class WhatsApp_WooCommerce {
 		$product_id = isset( $_POST['product_id'] ) ? intval( $_POST['product_id'] ) : 0;
 
 		if ( ! $product_id ) {
-			wp_send_json_error( __( 'Invalid product', 'order-messaging-for-woocommerce-kenya' ) );
+			wp_send_json_error( __( 'Invalid product', 'pesaflow-payments-for-woocommerce' ) );
 		}
 
 		$product = wc_get_product( $product_id );
 		if ( ! $product ) {
-			wp_send_json_error( __( 'Product not found', 'order-messaging-for-woocommerce-kenya' ) );
+			wp_send_json_error( __( 'Product not found', 'pesaflow-payments-for-woocommerce' ) );
 		}
 
 		$phone_number = WWCC_Settings::get( 'business_phone' );
 		if ( ! $phone_number ) {
-			wp_send_json_error( __( 'Store WhatsApp not configured', 'order-messaging-for-woocommerce-kenya' ) );
+			wp_send_json_error( __( 'Store WhatsApp not configured', 'pesaflow-payments-for-woocommerce' ) );
 		}
 
 		// Build WhatsApp message
 		$message = sprintf(
 			/* translators: 1: Product name, 2: Product price in KES */
-			__( 'Hi, I want to order:\nProduct: %1$s\nPrice: KES %2$s', 'order-messaging-for-woocommerce-kenya' ),
+			__( 'Hi, I want to order:\nProduct: %1$s\nPrice: KES %2$s', 'pesaflow-payments-for-woocommerce' ),
 			$product->get_name(),
 			$product->get_price()
 		);
@@ -168,17 +182,16 @@ class WhatsApp_WooCommerce {
 	 * Plugin activation
 	 */
 	public static function activate() {
-		// Check WooCommerce
-		if ( ! class_exists( 'WooCommerce' ) ) {
-			wp_die( esc_html__( 'WooCommerce must be installed and active', 'order-messaging-for-woocommerce-kenya' ) );
-		}
-
 		// Load all dependencies for activation
 		require_once WWCC_PLUGIN_DIR . 'includes/class-settings.php';
 		require_once WWCC_PLUGIN_DIR . 'includes/class-db.php';
 
 		// Create database tables
-		DB_WhatsApp_WooCommerce::create_tables();
+		WWCC_DB::create_tables();
+
+		if ( ! wp_next_scheduled( 'wwcc_cart_recovery_cron' ) ) {
+			wp_schedule_event( time(), 'hourly', 'wwcc_cart_recovery_cron' );
+		}
 
 		// Set plugin version
 		update_option( 'wwcc_plugin_version', WWCC_PLUGIN_VERSION );

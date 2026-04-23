@@ -3,15 +3,14 @@
  * Configuration Example
  *
  * This file shows how to configure the WooCommerce Order Messaging Kenya plugin.
+ * Copy settings from your API providers and add them to WordPress admin.
+ *
+ * @package Order_Messaging_For_WooCommerce_Kenya
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
- * Copy settings from your API providers and add them to WordPress admin.
- *
- * @package WhatsApp_WooCommerce
- */
 
 /**
  * IMPORTANT: Do NOT add credentials directly to this file!

@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WhatsApp API class
  */
-class WhatsApp_API {
+class WWCC_WhatsApp_API {
 
 	/**
 	 * Instance variable
@@ -104,16 +104,18 @@ class WhatsApp_API {
 	 * @return array|WP_Error Response from API
 	 */
 	public function send_message( $phone_number, $message, $args = [] ) {
+		$this->load_credentials();
+
 		// Sanitize phone number
 		$phone_number = $this->sanitize_phone( $phone_number );
 
 		if ( ! $phone_number ) {
-			return new WP_Error( 'invalid_phone', __( 'Invalid phone number', 'order-messaging-for-woocommerce-kenya' ) );
+			return new WP_Error( 'invalid_phone', __( 'Invalid phone number', 'pesaflow-payments-for-woocommerce' ) );
 		}
 
 		// Check if API is configured
 		if ( ! $this->is_configured() ) {
-			return new WP_Error( 'not_configured', __( 'WhatsApp API not configured', 'order-messaging-for-woocommerce-kenya' ) );
+			return new WP_Error( 'not_configured', __( 'WhatsApp API not configured', 'pesaflow-payments-for-woocommerce' ) );
 		}
 
 		if ( 'twilio' === $this->provider ) {
@@ -122,7 +124,7 @@ class WhatsApp_API {
 			return $this->send_via_meta( $phone_number, $message, $args );
 		}
 
-		return new WP_Error( 'unknown_provider', __( 'Unknown WhatsApp provider', 'order-messaging-for-woocommerce-kenya' ) );
+		return new WP_Error( 'unknown_provider', __( 'Unknown WhatsApp provider', 'pesaflow-payments-for-woocommerce' ) );
 	}
 
 	/**
@@ -172,7 +174,7 @@ class WhatsApp_API {
 
 		return new WP_Error(
 			'twilio_error',
-			isset( $body['message'] ) ? $body['message'] : __( 'Failed to send WhatsApp message', 'order-messaging-for-woocommerce-kenya' )
+			isset( $body['message'] ) ? $body['message'] : __( 'Failed to send WhatsApp message', 'pesaflow-payments-for-woocommerce' )
 		);
 	}
 
@@ -185,7 +187,7 @@ class WhatsApp_API {
 	 * @return array|WP_Error Response
 	 */
 	private function send_via_meta( $phone_number, $message, $args = [] ) {
-		$url = "https://graph.instagram.com/v18.0/{$this->meta_phone_number_id}/messages";
+		$url = "https://graph.facebook.com/v18.0/{$this->meta_phone_number_id}/messages";
 
 		// Clean phone number for Meta API
 		$clean_phone = preg_replace( '/[^0-9]/', '', $phone_number );
@@ -230,7 +232,7 @@ class WhatsApp_API {
 
 		return new WP_Error(
 			'meta_error',
-			isset( $body['error']['message'] ) ? $body['error']['message'] : __( 'Failed to send WhatsApp message', 'order-messaging-for-woocommerce-kenya' )
+			isset( $body['error']['message'] ) ? $body['error']['message'] : __( 'Failed to send WhatsApp message', 'pesaflow-payments-for-woocommerce' )
 		);
 	}
 
@@ -284,6 +286,10 @@ class WhatsApp_API {
 	 * Hook: Send notification when order is created
 	 */
 	public function on_order_created( $order_id ) {
+		if ( ! WWCC_Settings::get( 'enable_notifications', 1 ) ) {
+			return;
+		}
+
 		$order = wc_get_order( $order_id );
 
 		if ( ! $order || 'pending' !== $order->get_status() ) {
@@ -303,6 +309,10 @@ class WhatsApp_API {
 	 * Hook: Send notification when order is completed
 	 */
 	public function on_order_completed( $order_id ) {
+		if ( ! WWCC_Settings::get( 'enable_notifications', 1 ) ) {
+			return;
+		}
+
 		$order = wc_get_order( $order_id );
 
 		if ( ! $order ) {
@@ -312,7 +322,7 @@ class WhatsApp_API {
 		$phone   = $order->get_billing_phone();
 		$message = sprintf(
 			/* translators: 1: Customer first name, 2: Order ID, 3: Order tracking URL */
-			__( '🎉 Hi %1$s!\n\nYour order #%2$d has been completed and is on its way 📦\n\nTrack your order here: %3$s', 'order-messaging-for-woocommerce-kenya' ),
+			__( '🎉 Hi %1$s!\n\nYour order #%2$d has been completed and is on its way 📦\n\nTrack your order here: %3$s', 'pesaflow-payments-for-woocommerce' ),
 			$order->get_billing_first_name(),
 			$order_id,
 			$order->get_view_order_url()
@@ -328,6 +338,10 @@ class WhatsApp_API {
 	 * Hook: Send notification when payment is completed
 	 */
 	public function on_payment_complete( $order_id ) {
+		if ( ! WWCC_Settings::get( 'enable_notifications', 1 ) ) {
+			return;
+		}
+
 		$order = wc_get_order( $order_id );
 
 		if ( ! $order ) {
@@ -337,10 +351,10 @@ class WhatsApp_API {
 		$phone   = $order->get_billing_phone();
 		$message = sprintf(
 			/* translators: 1: Customer first name, 2: Order ID, 3: Order total in KES */
-			__( '✅ Hi %1$s!\n\nPayment received for order #%2$d\nTotal: KES %3$s\n\nWe\'ll ship your order shortly!', 'order-messaging-for-woocommerce-kenya' ),
+			__( '✅ Hi %1$s!\n\nPayment received for order #%2$d\nTotal: %3$s\n\nWe\'ll ship your order shortly!', 'pesaflow-payments-for-woocommerce' ),
 			$order->get_billing_first_name(),
 			$order_id,
-			$order->get_formatted_order_total()
+			wp_strip_all_tags( $order->get_formatted_order_total() )
 		);
 
 		$this->send_message( $phone, $message, [ 'order_id' => $order_id ] );
@@ -360,11 +374,11 @@ class WhatsApp_API {
 
 		/* translators: 1: Customer first name, 2: Order ID, 3: Order items list, 4: Order total in KES, 5: M-Pesa till number */
 		return sprintf(
-			__( "👋 Hi %1\$s!\n\nYour order #%2\$d has been received!\n\n%3\$sTotal: KES %4\$s\n\n💰 Pay via M-Pesa to: %5\$s\n\nThank you! 🙏", 'order-messaging-for-woocommerce-kenya' ),
+			__( "👋 Hi %1\$s!\n\nYour order #%2\$d has been received!\n\n%3\$sTotal: %4\$s\n\n💰 Pay via M-Pesa to: %5\$s\n\nThank you! 🙏", 'pesaflow-payments-for-woocommerce' ),
 			$order->get_billing_first_name(),
 			$order->get_id(),
 			$items,
-			$order->get_formatted_order_total(),
+			wp_strip_all_tags( $order->get_formatted_order_total() ),
 			WWCC_Settings::get( 'mpesa_till_number', 'YOUR_TILL_NUMBER' )
 		);
 	}
